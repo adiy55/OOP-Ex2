@@ -7,6 +7,7 @@ import api.DirectedWeightedGraphAlgorithms;
 public class Ex2 {
     /**
      * This static function will be used to test your implementation
+     *
      * @param json_file - a json file (e.g., G1.json - G3.gson)
      * @return
      */
@@ -17,8 +18,10 @@ public class Ex2 {
         // ********************************
         return ans;
     }
+
     /**
      * This static function will be used to test your implementation
+     *
      * @param json_file - a json file (e.g., G1.json - G3.gson)
      * @return
      */
@@ -29,10 +32,11 @@ public class Ex2 {
         // ********************************
         return ans;
     }
+
     /**
      * This static function will run your GUI using the json fime.
-     * @param json_file - a json file (e.g., G1.json - G3.gson)
      *
+     * @param json_file - a json file (e.g., G1.json - G3.gson)
      */
     public static void runGUI(String json_file) {
         DirectedWeightedGraphAlgorithms alg = getGrapgAlgo(json_file);
