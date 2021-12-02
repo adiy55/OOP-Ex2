@@ -1,9 +1,21 @@
 import api.DirectedWeightedGraph;
 import api.NodeData;
 
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.List;
 
-public class DirectedWeightedGraphAlgorithms implements api.DirectedWeightedGraphAlgorithms {
+public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
+    public static void main(String[] args) {
+        Gson gson = new Gson();
+
+//        JsonReader reader = new JsonReader(new FileReader("data/G1.json"));
+
+    }
+
     @Override
     public void init(DirectedWeightedGraph g) {
 

@@ -6,15 +6,16 @@ public class Node implements api.NodeData {
     private int id;
     private GeoLocation location;
     private double weight;
-    private HashMap<Integer, Edge> edgesOut;
+    private HashMap<Integer, Edge> edgesOut; // key = dest, src is this node
+    private HashMap<Integer, Edge> edgesIn; // key = src, dest is this node
     private String info;
     private int tag;
 
-    public Node (int id, GeoLocation loc, double weight) {
+    public Node(int id, GeoLocation loc, double weight) {
         this.id = id;
         this.location = loc;
         this.weight = weight;
-        this.edgesOut = new HashMap<Integer, Edge>();
+        this.edgesOut = new HashMap<>();
     }
 
     @Override
@@ -69,5 +70,13 @@ public class Node implements api.NodeData {
 
     public void setEdgesOut(HashMap<Integer, Edge> edgesOut) {
         this.edgesOut = edgesOut;
+    }
+
+    public HashMap<Integer, Edge> getEdgesIn() {
+        return edgesIn;
+    }
+
+    public void setEdgesIn(HashMap<Integer, Edge> edgesIn) {
+        this.edgesIn = edgesIn;
     }
 }

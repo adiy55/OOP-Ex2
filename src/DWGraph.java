@@ -1,11 +1,22 @@
 import api.EdgeData;
 import api.NodeData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class DirectedWeightedGraph implements api.DirectedWeightedGraph {
+public class DWGraph implements api.DirectedWeightedGraph {
     private HashMap<Integer, Node> nodes;
+    private int numEdges;
+//    private HashMap<Integer, ArrayList<Edge>> edges; // src
+
+    public DWGraph(HashMap<Integer, Node> nodes) {
+        this.nodes = nodes;
+        numEdges = 0;
+//        for (Node node : this.nodes) {
+//            numEdges += node.getEdgesOut().size();
+//        }
+    }
 
     @Override
     public NodeData getNode(int key) {
@@ -17,18 +28,19 @@ public class DirectedWeightedGraph implements api.DirectedWeightedGraph {
     }
 
     @Override
-    public EdgeData getEdge(int src, int dest) {
-        return null;
+    public EdgeData getEdge(int src, int dest) { // todo: throw exceptions
+        return nodes.get(src).getEdgesOut().get(dest);
     }
 
     @Override
     public void addNode(NodeData n) {
-
+        nodes.put(n.getKey(), (Node) n);
     }
 
     @Override
     public void connect(int src, int dest, double w) {
-
+        Edge e = new Edge(src, dest, w);
+        nodes.get(src).getEdgesOut().put(dest, e); // overrides an existing edge (if there is one)
     }
 
     @Override
@@ -48,6 +60,7 @@ public class DirectedWeightedGraph implements api.DirectedWeightedGraph {
 
     @Override
     public NodeData removeNode(int key) {
+//        nodes.get(key).getEdgesOut()
         return null;
     }
 
@@ -63,6 +76,7 @@ public class DirectedWeightedGraph implements api.DirectedWeightedGraph {
 
     @Override
     public int edgeSize() {
+
         return 0;
     }
 
