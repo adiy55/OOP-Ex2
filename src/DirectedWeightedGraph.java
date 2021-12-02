@@ -9,7 +9,11 @@ public class DirectedWeightedGraph implements api.DirectedWeightedGraph {
 
     @Override
     public NodeData getNode(int key) {
-        return null;
+        try {
+            return nodes.get(key);
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     @Override

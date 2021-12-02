@@ -1,40 +1,49 @@
+
 public class Edge implements api.EdgeData {
     private int src;
     private int dest;
     private double weight;
+    private String info;
+    private int tag;
+
+    public Edge(int src, int dest, double weight) {
+        this.src = src;
+        this.dest = dest;
+        this.weight = weight;
+    }
 
     @Override
     public int getSrc() {
-        return 0;
+        return this.src;
     }
 
     @Override
     public int getDest() {
-        return 0;
+        return this.dest;
     }
 
     @Override
     public double getWeight() {
-        return 0;
+        return this.weight;
     }
 
     @Override
     public String getInfo() {
-        return null;
+        return this.info;
     }
 
     @Override
     public void setInfo(String s) {
-
+        this.info = s;
     }
 
     @Override
     public int getTag() {
-        return 0;
+        return this.tag;
     }
 
     @Override
     public void setTag(int t) {
-
+        this.tag = t;
     }
 }
