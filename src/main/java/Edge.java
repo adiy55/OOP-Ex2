@@ -1,3 +1,6 @@
+import com.google.gson.*;
+
+import java.lang.reflect.Type;
 
 public class Edge implements api.EdgeData {
     private int src;
@@ -6,10 +9,25 @@ public class Edge implements api.EdgeData {
     private String info;
     private int tag;
 
-    public Edge(int src, int dest, double weight) {
+    public Edge(int src, double weight, int dest) {
         this.src = src;
-        this.dest = dest;
         this.weight = weight;
+        this.dest = dest;
+    }
+
+    public static Edge deserializeEdge(String json) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        JsonDeserializer<Edge> deserializer = (json1, typeOfT, context) -> {
+            JsonObject jsonObject = json1.getAsJsonObject();
+            return new Edge(
+                    jsonObject.get("src").getAsInt(),
+                    jsonObject.get("w").getAsDouble(),
+                    jsonObject.get("dest").getAsInt()
+            );
+        };
+        gsonBuilder.registerTypeAdapter(Edge.class, deserializer);
+        Gson customGson = gsonBuilder.create();
+        return customGson.fromJson(json, Edge.class);
     }
 
     @Override
@@ -45,5 +63,14 @@ public class Edge implements api.EdgeData {
     @Override
     public void setTag(int t) {
         this.tag = t;
+    }
+
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "src=" + src +
+                ", dest=" + dest +
+                ", weight=" + weight +
+                '}';
     }
 }

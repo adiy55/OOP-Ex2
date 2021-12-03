@@ -9,6 +9,14 @@ public class GeoLoc implements api.GeoLocation {
         this.z = z;
     }
 
+    public GeoLoc(String loc) {
+        String[] str = loc.split(",");
+        x = Double.parseDouble(str[0]);
+        y = Double.parseDouble(str[1]);
+        z = Double.parseDouble(str[2]);
+    }
+
+
     @Override
     public double x() {
         return this.x;
@@ -30,5 +38,14 @@ public class GeoLoc implements api.GeoLocation {
         double ySq = Math.pow((this.y - g.y()), 2);
         double zSq = Math.pow((this.z - g.z()), 2);
         return Math.sqrt(xSq + ySq + zSq);
+    }
+
+    @Override
+    public String toString() {
+        return "GeoLoc{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
     }
 }

@@ -1,21 +1,43 @@
 import api.GeoLocation;
+import com.google.gson.*;
 
-import java.util.HashMap;
+import java.lang.reflect.Type;
+import java.util.HashSet;
 
 public class Node implements api.NodeData {
     private int id;
     private GeoLocation location;
     private double weight;
-    private HashMap<Integer, Edge> edgesOut; // key = dest, src is this node
-    private HashMap<Integer, Edge> edgesIn; // key = src, dest is this node
+    private HashSet<Integer> neighbors; // node id with an edge that dest == this node
     private String info;
     private int tag;
 
-    public Node(int id, GeoLocation loc, double weight) {
+    public Node(int id, GeoLocation loc) {
         this.id = id;
         this.location = loc;
-        this.weight = weight;
-        this.edgesOut = new HashMap<>();
+        this.weight = 0;
+        this.neighbors = new HashSet<>(); // todo: how to add neighbors
+    }
+
+    public static Node deserializeNode(String json) {
+//        String json = "    {\n" +
+//                "      \"pos\": \"35.19589389346247,32.10152879327731,0.0\",\n" +
+//                "      \"id\": 0\n" +
+//                "    }";
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        JsonDeserializer<Node> deserializer = new JsonDeserializer<>() {
+            @Override
+            public Node deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                JsonObject jsonObject = json.getAsJsonObject();
+                return new Node(
+                        jsonObject.get("id").getAsInt(),
+                        new GeoLoc(jsonObject.get("pos").getAsString())
+                );
+            }
+        };
+        gsonBuilder.registerTypeAdapter(Node.class, deserializer);
+        Gson customGson = gsonBuilder.create();
+        return customGson.fromJson(json, Node.class);
     }
 
     @Override
@@ -64,19 +86,7 @@ public class Node implements api.NodeData {
         this.tag = t;
     }
 
-    public HashMap<Integer, Edge> getEdgesOut() {
-        return edgesOut;
-    }
-
-    public void setEdgesOut(HashMap<Integer, Edge> edgesOut) {
-        this.edgesOut = edgesOut;
-    }
-
-    public HashMap<Integer, Edge> getEdgesIn() {
-        return edgesIn;
-    }
-
-    public void setEdgesIn(HashMap<Integer, Edge> edgesIn) {
-        this.edgesIn = edgesIn;
+    public HashSet<Integer> getNeighbors() {
+        return this.neighbors;
     }
 }
