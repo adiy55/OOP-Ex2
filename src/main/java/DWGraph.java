@@ -94,28 +94,44 @@ public class DWGraph implements api.DirectedWeightedGraph {
 
     @Override
     public NodeData removeNode(int key) {
-//        nodes.get(key).getEdgesOut()
-        return null;
+        edges.remove(key);
+        Node n = (Node) nodes.get(key);
+        for (Integer src : n.getNeighbors()) { // neighbor = node id which has an edge to the key
+            edges.get(src).remove(key);
+        }
+        this.modeCount++;
+        return nodes.remove(key);
     }
 
+    /**
+     * Assuming edge exists, removes it
+     *
+     * @param src
+     * @param dest
+     * @return
+     */
     @Override
     public EdgeData removeEdge(int src, int dest) {
+        if (edges.get(src).size() == 1) { //if there is only one edge going from this src, then it must be dest.
+            edges.remove(src);
+        }
+        edges.get(src).remove(dest); //otherwise, remove the specific hashmap of dest from the hashmap of src
+        this.modeCount++;
         return null;
     }
 
     @Override
     public int nodeSize() {
-        return 0;
+        return nodes.size();
     }
 
     @Override
     public int edgeSize() {
-
-        return 0;
+        return this.numEdges;
     }
 
     @Override
     public int getMC() {
-        return 0;
+        return this.modeCount;
     }
 }

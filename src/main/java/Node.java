@@ -89,4 +89,16 @@ public class Node implements api.NodeData {
     public HashSet<Integer> getNeighbors() {
         return this.neighbors;
     }
+
+    public void setNeighbors(HashSet<Integer> n) {
+        this.neighbors = n;
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "id=" + id +
+                ", location=" + location +
+                '}';
+    }
 }
