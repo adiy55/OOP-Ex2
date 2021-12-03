@@ -20,10 +20,6 @@ public class Node implements api.NodeData {
     }
 
     public static Node deserializeNode(String json) {
-//        String json = "    {\n" +
-//                "      \"pos\": \"35.19589389346247,32.10152879327731,0.0\",\n" +
-//                "      \"id\": 0\n" +
-//                "    }";
         GsonBuilder gsonBuilder = new GsonBuilder();
         JsonDeserializer<Node> deserializer = new JsonDeserializer<>() {
             @Override
@@ -88,6 +84,10 @@ public class Node implements api.NodeData {
 
     public HashSet<Integer> getNeighbors() {
         return this.neighbors;
+    }
+
+    public void addNeighbor(int neighbor_id) {
+        neighbors.add(neighbor_id);
     }
 
     public void setNeighbors(HashSet<Integer> n) {

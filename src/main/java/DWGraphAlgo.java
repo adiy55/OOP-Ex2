@@ -1,19 +1,21 @@
 import api.DirectedWeightedGraph;
+import api.EdgeData;
 import api.NodeData;
+import com.google.gson.Gson;
+import org.json.*;
 
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 
 public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
-    public static void main(String[] args) throws FileNotFoundException {
-        Gson gson = new Gson();
+    private DWGraph graph;
+    private String filename;
 
-        JsonReader reader = new JsonReader(new FileReader("data/G1.json"));
-
+    public DWGraphAlgo(String file) {
+        filename = file;
     }
 
     @Override
@@ -63,6 +65,35 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
     @Override
     public boolean load(String file) {
+        try {
+            Gson gson = new Gson();
+            JSONObject jsonObject = new JSONObject(new String(Files.readAllBytes(Paths.get(file))));
+            Edge[] json_edges = gson.fromJson(jsonObject.get("Edges").toString(), Edge[].class);
+            JSONArray json_nodes = jsonObject.getJSONArray("Nodes");
+            HashMap<Integer, NodeData> nodes = new HashMap<>();
+            HashMap<Integer, HashMap<Integer, EdgeData>> edges = new HashMap<>();
+            for (int i = 0; i < json_nodes.length(); i++) {
+                Node node = Node.deserializeNode(json_nodes.getJSONObject(i).toString());
+                nodes.put(node.getKey(), node);
+                edges.put(node.getKey(), new HashMap<>());
+            }
+            for (Edge e : json_edges) {
+                Node n = (Node) nodes.get(e.getSrc());
+                n.addNeighbor(e.getDest());
+                edges.get(e.getSrc()).put(e.getDest(), e);
+            }
+            graph = new DWGraph(nodes, edges);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
+    }
+
+    public static void main(String[] args) {
+        DWGraphAlgo dw = new DWGraphAlgo("data/G1.json");
+        dw.load(dw.filename);
+        System.out.println(dw.graph);
+
     }
 }

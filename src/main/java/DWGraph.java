@@ -1,13 +1,8 @@
 import api.EdgeData;
 import api.NodeData;
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 public class DWGraph implements api.DirectedWeightedGraph {
     private final HashMap<Integer, NodeData> nodes;
@@ -133,5 +128,15 @@ public class DWGraph implements api.DirectedWeightedGraph {
     @Override
     public int getMC() {
         return this.modeCount;
+    }
+
+    @Override
+    public String toString() {
+        return "DWGraph{" +
+                "nodes=" + nodes +
+                ", edges=" + edges +
+                ", numEdges=" + numEdges +
+                ", modeCount=" + modeCount +
+                '}';
     }
 }

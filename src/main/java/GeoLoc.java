@@ -16,7 +16,6 @@ public class GeoLoc implements api.GeoLocation {
         z = Double.parseDouble(str[2]);
     }
 
-
     @Override
     public double x() {
         return this.x;
