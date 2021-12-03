@@ -1,14 +1,13 @@
 import api.EdgeData;
 import api.NodeData;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class DWGraph implements api.DirectedWeightedGraph {
     private HashMap<Integer, Node> nodes;
     private int numEdges;
-//    private HashMap<Integer, ArrayList<Edge>> edges; // src
+//    private HashMap<Integer, HashMap<Integer, Edge>> edges; // key = src, value: key = dest, value = edge
 
     public DWGraph(HashMap<Integer, Node> nodes) {
         this.nodes = nodes;

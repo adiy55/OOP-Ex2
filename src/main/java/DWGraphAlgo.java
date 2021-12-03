@@ -9,10 +9,10 @@ import java.io.FileReader;
 import java.util.List;
 
 public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         Gson gson = new Gson();
 
-//        JsonReader reader = new JsonReader(new FileReader("data/G1.json"));
+        JsonReader reader = new JsonReader(new FileReader("data/G1.json"));
 
     }
 
