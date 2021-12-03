@@ -15,21 +15,6 @@ public class Edge implements api.EdgeData {
         this.dest = dest;
     }
 
-    public static Edge deserializeEdge(String json) {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        JsonDeserializer<Edge> deserializer = (json1, typeOfT, context) -> {
-            JsonObject jsonObject = json1.getAsJsonObject();
-            return new Edge(
-                    jsonObject.get("src").getAsInt(),
-                    jsonObject.get("w").getAsDouble(),
-                    jsonObject.get("dest").getAsInt()
-            );
-        };
-        gsonBuilder.registerTypeAdapter(Edge.class, deserializer);
-        Gson customGson = gsonBuilder.create();
-        return customGson.fromJson(json, Edge.class);
-    }
-
     @Override
     public int getSrc() {
         return this.src;
