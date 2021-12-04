@@ -19,6 +19,15 @@ public class Node implements api.NodeData {
         this.neighbors = new HashSet<>(); // todo: how to add neighbors
     }
 
+    public Node(Node old) {
+        this.id = old.id;
+        this.location = old.location;
+        this.weight = old.weight;
+        this.neighbors = old.neighbors;
+        this.info = old.info;
+        this.tag = old.tag;
+    }
+
     public static Node deserializeNode(String json) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         JsonDeserializer<Node> deserializer = new JsonDeserializer<>() {

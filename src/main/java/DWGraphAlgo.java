@@ -1,4 +1,5 @@
 import api.DirectedWeightedGraph;
+import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
 import api.NodeData;
 import com.google.gson.Gson;
@@ -8,15 +9,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
     private DWGraph graph;
     private String filename;
 
-    public DWGraphAlgo(String file) {
-        filename = file;
+    public DWGraphAlgo(String filename) {
+        this.filename = filename;
+        boolean flag = load(filename);
+        if (!flag) this.graph = null;
     }
+
+//    public DWGraphAlgo(String file) {
+//        filename = file;
+//    }
 
     @Override
     public void init(DirectedWeightedGraph g) {
@@ -25,12 +33,12 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
     @Override
     public DirectedWeightedGraph getGraph() {
-        return null;
+        return this.graph;
     }
 
     @Override
     public DirectedWeightedGraph copy() {
-        return null;
+        return new DWGraph(this.graph);
     }
 
     @Override
@@ -60,7 +68,8 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
     @Override
     public boolean save(String file) {
-        return false;
+        System.out.println(new Gson().toJson(this.graph));
+        return true;
     }
 
     @Override
@@ -82,12 +91,12 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                 n.addNeighbor(e.getDest());
                 edges.get(e.getSrc()).put(e.getDest(), e);
             }
-            graph = new DWGraph(nodes, edges);
-            return true;
+            this.graph = new DWGraph(nodes, edges);
+            return true; //Successfully loaded
         } catch (IOException e) {
             e.printStackTrace();
+            return false; //loading unsuccessful
         }
-        return false;
     }
 
     public static void main(String[] args) {

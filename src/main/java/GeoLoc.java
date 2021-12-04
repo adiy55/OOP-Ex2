@@ -9,6 +9,12 @@ public class GeoLoc implements api.GeoLocation {
         this.z = z;
     }
 
+    public GeoLoc(GeoLoc g) {
+        this.x = g.x;
+        this.y = g.y;
+        this.z = g.z;
+    }
+
     public GeoLoc(String loc) {
         String[] str = loc.split(",");
         x = Double.parseDouble(str[0]);

@@ -1,5 +1,6 @@
 import api.EdgeData;
 import api.NodeData;
+import jdk.jshell.execution.Util;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +24,16 @@ public class DWGraph implements api.DirectedWeightedGraph {
         this.nodeIterMC = -1; //init to invalid value, so as not to throw exception when there is no need to
         this.edgeIterMC = -1;
         this.specEdgeIterMC = -1;
+    }
+
+    public DWGraph(DWGraph g) {
+        this.nodes = Utilities.copyNodes(g.nodes);
+        this.edges = Utilities.copyEdges(g.edges);
+        this.numEdges = g.numEdges;
+        this.modeCount = g.modeCount;
+        this.nodeIterMC = g.nodeIterMC;
+        this.edgeIterMC = g.edgeIterMC;
+        this.specEdgeIterMC = g.specEdgeIterMC;
     }
 
     @Override

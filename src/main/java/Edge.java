@@ -1,6 +1,7 @@
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
+import java.security.spec.ECGenParameterSpec;
 
 public class Edge implements api.EdgeData {
     private int src;
@@ -13,6 +14,14 @@ public class Edge implements api.EdgeData {
         this.src = src;
         this.weight = weight;
         this.dest = dest;
+    }
+
+    public Edge(Edge e) {
+        this.src = e.src;
+        this.dest = e.dest;
+        this.weight = e.weight;
+        this.info = e.info;
+        this.tag = e.tag;
     }
 
     @Override
