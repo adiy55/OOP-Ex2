@@ -26,9 +26,6 @@ public class DWGraph implements api.DirectedWeightedGraph {
         this.edges = Utilities.copyEdges(g.edges);
         this.numEdges = g.numEdges;
         this.modeCount = g.modeCount;
-        this.nodeIterMC = g.nodeIterMC;
-        this.edgeIterMC = g.edgeIterMC;
-        this.specEdgeIterMC = g.specEdgeIterMC;
     }
 
     @Override
