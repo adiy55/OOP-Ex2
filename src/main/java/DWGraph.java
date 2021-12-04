@@ -2,6 +2,7 @@ import api.EdgeData;
 import api.NodeData;
 import jdk.jshell.execution.Util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -9,21 +10,15 @@ public class DWGraph implements api.DirectedWeightedGraph {
     private final HashMap<Integer, NodeData> nodes;
     private final HashMap<Integer, HashMap<Integer, EdgeData>> edges; // key = src, value: key = dest, value = edge
     private int numEdges;
-    private int modeCount; // most recent mode count
-    private int nodeIterMC; // mode count when node iterator method was called
-    private int edgeIterMC;
-    private int specEdgeIterMC;
+    private int modeCount;
 
     public DWGraph(HashMap<Integer, NodeData> nodes, HashMap<Integer, HashMap<Integer, EdgeData>> edges) {
         this.nodes = nodes;
-        numEdges = 0;
         this.edges = edges;
+        numEdges = modeCount = 0;
         for (HashMap<Integer, EdgeData> map : this.edges.values()) {
             numEdges += map.size();
         }
-        this.nodeIterMC = -1; //init to invalid value, so as not to throw exception when there is no need to
-        this.edgeIterMC = -1;
-        this.specEdgeIterMC = -1;
     }
 
     public DWGraph(DWGraph g) {
@@ -38,16 +33,12 @@ public class DWGraph implements api.DirectedWeightedGraph {
 
     @Override
     public NodeData getNode(int key) {
-        try {
-            return nodes.get(key);
-        } catch (NullPointerException e) {
-            return null;
-        }
+        return nodes.containsKey(key) ? nodes.get(key) : null;
     }
 
     @Override
-    public EdgeData getEdge(int src, int dest) { // todo: throw exceptions
-        return edges.get(src).get(dest);
+    public EdgeData getEdge(int src, int dest) {
+        return (edges.containsKey(src) && edges.get(src).containsKey(dest)) ? edges.get(src).get(dest) : null;
     }
 
     @Override
@@ -56,73 +47,158 @@ public class DWGraph implements api.DirectedWeightedGraph {
     }
 
     @Override
-    public void connect(int src, int dest, double w) {
+    public void connect(int src, int dest, double w) { // overwrites an existing edge (if there is one)
         Edge e = new Edge(src, w, dest);
-        if (edges.get(src) != null) {
+        if (edges.containsKey(src)) {
             edges.get(src).put(dest, e);
         } else {
             HashMap<Integer, EdgeData> temp = new HashMap<>();
             temp.put(dest, e);
             edges.put(src, temp);
-        } // overrides an existing edge (if there is one)
-
-        //TODO: add to relevant neighbours
+        }
+        Node n = (Node) nodes.get(dest); // add src node to dest node neighbors
+        n.addNeighbor(src);
         this.numEdges++;
         this.modeCount++;
     }
 
     @Override
     public Iterator<NodeData> nodeIter() {
-        if (this.modeCount != this.nodeIterMC && this.nodeIterMC != -1) {
-            throw new RuntimeException("The graph was changed!");
+        return new nodeIterator();
+    }
+
+    private class nodeIterator implements Iterator<NodeData> {
+        private final ArrayList<NodeData> data;
+        private final int iter_mc;
+        private int index;
+
+        public nodeIterator() {
+            data = new ArrayList<>();
+            data.addAll(nodes.values());
+            iter_mc = modeCount;
+            index = 0;
         }
-        nodeIterMC = modeCount;
-        return nodes.values().iterator();
+
+        @Override
+        public boolean hasNext() {
+            if (iter_mc != modeCount) {
+                throw new RuntimeException("Invalid iterator!");
+            }
+            return index < data.size();
+        }
+
+        @Override
+        public NodeData next() {
+            if (iter_mc != modeCount) {
+                throw new RuntimeException("Invalid iterator!");
+            }
+            return data.get(index++);
+        }
     }
 
     @Override
     public Iterator<EdgeData> edgeIter() {
-        if (this.modeCount != this.edgeIterMC && this.edgeIterMC != -1) {
-            throw new RuntimeException("The graph was changed!");
+        return new edgesIterator();
+    }
+
+    private class edgesIterator implements Iterator<EdgeData> {
+        private final ArrayList<EdgeData> data;
+        private final int iter_mc;
+        private int index;
+
+        public edgesIterator() {
+            data = new ArrayList<>();
+            iter_mc = modeCount;
+            index = 0;
+            for (Integer key : edges.keySet()) {
+                data.addAll(edges.get(key).values());
+            }
         }
-        this.specEdgeIterMC = this.modeCount;
-        return null;
+
+        @Override
+        public boolean hasNext() {
+            if (iter_mc != modeCount) {
+                throw new RuntimeException("Invalid iterator!");
+            }
+            return index < data.size();
+        }
+
+        @Override
+        public EdgeData next() {
+            if (iter_mc != modeCount) {
+                throw new RuntimeException("Invalid iterator!");
+            }
+            return data.get(index++);
+        }
     }
 
     @Override
     public Iterator<EdgeData> edgeIter(int node_id) {
-        if (this.modeCount != this.specEdgeIterMC && this.specEdgeIterMC != -1) {
-            throw new RuntimeException("The graph was changed!");
+        return new edgeIter(node_id);
+    }
+
+    private class edgeIter implements Iterator<EdgeData> {
+        private final ArrayList<EdgeData> data;
+        private final int iter_mc;
+        private int index;
+
+        public edgeIter(int node_id) {
+            data = new ArrayList<>();
+            data.addAll(edges.get(node_id).values());
+            iter_mc = modeCount;
+            index = 0;
         }
-        this.edgeIterMC = this.modeCount;
-        return edges.get(node_id).values().iterator();
+
+        @Override
+        public boolean hasNext() {
+            if (iter_mc != modeCount) {
+                throw new RuntimeException("Invalid iterator!");
+            }
+            return index < data.size();
+        }
+
+        @Override
+        public EdgeData next() {
+            if (iter_mc != modeCount) {
+                throw new RuntimeException("Invalid iterator!");
+            }
+            return data.get(index++);
+        }
     }
 
     @Override
     public NodeData removeNode(int key) {
-        edges.remove(key);
-        Node n = (Node) nodes.get(key);
-        for (Integer src : n.getNeighbors()) { // neighbor = node id which has an edge to the key
-            edges.get(src).remove(key);
+        for (Integer dest : edges.get(key).keySet()) { // dest nodes contain src as a neighbor
+            Node n = (Node) nodes.get(dest);
+            n.removeNeighbor(key);
         }
-        this.modeCount++;
-        return nodes.remove(key);
+        numEdges -= edges.get(key).size();
+        edges.remove(key); // remove all edges that src == key
+        if (nodes.containsKey(key)) { // remove edges that key == dest
+            Node n = (Node) nodes.get(key);
+            for (Integer src : n.getNeighbors()) { // neighbor = src node of an edge with key as the dest
+                edges.get(src).remove(key);
+                numEdges--;
+            }
+            modeCount++;
+            return nodes.remove(key);
+        }
+        return null;
     }
 
-    /**
-     * Assuming edge exists, removes it
-     *
-     * @param src
-     * @param dest
-     * @return
-     */
     @Override
     public EdgeData removeEdge(int src, int dest) {
-        if (edges.get(src).size() == 1) { //if there is only one edge going from this src, then it must be dest.
-            edges.remove(src);
+        if (edges.get(src).containsKey(dest)) { // dest node contains src as a neighbor
+            Node n = (Node) nodes.get(dest);
+            n.removeNeighbor(src);
+            EdgeData e = edges.get(src).remove(dest);
+            if (edges.get(src).size() == 1) { // if there is only one edge going from this src, then it must be dest.
+                edges.remove(src);
+            }
+            modeCount++;
+            numEdges--;
+            return e; // otherwise, remove the specific hashmap of dest from the hashmap of src
         }
-        edges.get(src).remove(dest); //otherwise, remove the specific hashmap of dest from the hashmap of src
-        this.modeCount++;
         return null;
     }
 

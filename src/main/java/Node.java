@@ -8,7 +8,7 @@ public class Node implements api.NodeData {
     private int id;
     private GeoLocation location;
     private double weight;
-    private HashSet<Integer> neighbors; // node id with an edge that dest == this node
+    private HashSet<Integer> neighbors; // node id (the src) with an edge that dest == this node
     private String info;
     private int tag;
 
@@ -99,8 +99,8 @@ public class Node implements api.NodeData {
         neighbors.add(neighbor_id);
     }
 
-    public void setNeighbors(HashSet<Integer> n) {
-        this.neighbors = n;
+    public void removeNeighbor(int neighbor_id) {
+        neighbors.remove(neighbor_id);
     }
 
     @Override
