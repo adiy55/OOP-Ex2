@@ -1,11 +1,11 @@
 import api.EdgeData;
 import api.NodeData;
-import jdk.jshell.execution.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+// todo: should we catch exceptions?
 public class DWGraph implements api.DirectedWeightedGraph {
     private final HashMap<Integer, NodeData> nodes;
     private final HashMap<Integer, HashMap<Integer, EdgeData>> edges; // key = src, value: key = dest, value = edge
@@ -38,13 +38,24 @@ public class DWGraph implements api.DirectedWeightedGraph {
         return (edges.containsKey(src) && edges.get(src).containsKey(dest)) ? edges.get(src).get(dest) : null;
     }
 
+    /*
+    If the nodes HashMap contains a node with the same key, the new node will overwrite the old node.
+    todo: make sure test that the function works as mentioned above.
+     */
     @Override
     public void addNode(NodeData n) {
         nodes.put(n.getKey(), n);
     }
 
+    /*
+    If the edges HashMap contains an edge with the same src or dest, overwrites the existing edge.
+    todo: if the src, dest do not exist or an illegal weight is given (negative num) -> should not add edge, add exception
+     */
     @Override
-    public void connect(int src, int dest, double w) { // overwrites an existing edge (if there is one)
+    public void connect(int src, int dest, double w) {
+        if (!nodes.containsKey(src) || !nodes.containsKey(dest) || w <= 0 || src == dest) {
+            throw new IllegalArgumentException("Illegal edge!");
+        }
         Edge e = new Edge(src, w, dest);
         if (edges.containsKey(src)) {
             edges.get(src).put(dest, e);
@@ -95,15 +106,15 @@ public class DWGraph implements api.DirectedWeightedGraph {
 
     @Override
     public Iterator<EdgeData> edgeIter() {
-        return new edgesIterator();
+        return new allEdgesIterator();
     }
 
-    private class edgesIterator implements Iterator<EdgeData> {
+    private class allEdgesIterator implements Iterator<EdgeData> {
         private final ArrayList<EdgeData> data;
         private final int iter_mc;
         private int index;
 
-        public edgesIterator() {
+        public allEdgesIterator() {
             data = new ArrayList<>();
             iter_mc = modeCount;
             index = 0;
@@ -129,17 +140,18 @@ public class DWGraph implements api.DirectedWeightedGraph {
         }
     }
 
+    // todo: remove method in iterators???
     @Override
     public Iterator<EdgeData> edgeIter(int node_id) {
-        return new edgeIter(node_id);
+        return new edgeIterator(node_id);
     }
 
-    private class edgeIter implements Iterator<EdgeData> {
+    private class edgeIterator implements Iterator<EdgeData> {
         private final ArrayList<EdgeData> data;
         private final int iter_mc;
         private int index;
 
-        public edgeIter(int node_id) {
+        public edgeIterator(int node_id) {
             data = new ArrayList<>();
             data.addAll(edges.get(node_id).values());
             iter_mc = modeCount;

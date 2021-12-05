@@ -27,8 +27,8 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 //    }
 
     @Override
-    public void init(DirectedWeightedGraph g) {
-
+    public void init(DirectedWeightedGraph g) { // todo: can we assume that this is a DWGraph ??????
+        graph = (DWGraph) g;
     }
 
     @Override
