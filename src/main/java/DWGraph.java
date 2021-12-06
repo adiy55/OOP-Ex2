@@ -105,6 +105,10 @@ public class DWGraph implements api.DirectedWeightedGraph {
         }
     }
 
+    public int neightbourCount (int key) {
+        return this.edges.get(key).size();
+    }
+
     @Override
     public Iterator<EdgeData> edgeIter() {
         return new edgesIterator();
