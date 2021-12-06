@@ -133,7 +133,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                 if (!visited.contains(neighEdge.getDest())) { // ...to here)
                     double weightToCompare = neighEdge.getWeight() + tempArr[1];
                     if (map.get(neighEdge.getDest())[0] > weightToCompare) {
-                        map.put(neighEdge.getDest(), new double[] {weightToCompare, neighEdge.getDest()});
+                        map.put(neighEdge.getDest(), new double[]{weightToCompare, neighEdge.getDest()});
                     }
                 }
             }
@@ -156,10 +156,8 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                 }
             }
         }
-        return new double[] {minKey, minVal};
+        return new double[]{minKey, minVal};
     }
-
-
 
 
     @Override
@@ -193,8 +191,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         try {
             Gson gson = new Gson();
             JSONObject jsonObject = new JSONObject(new String(Files.readAllBytes(Paths.get(file))));
-            String str = jsonObject.get("Edges").toString();
-            Edge[] json_edges = gson.fromJson(str, Edge[].class);
+            Edge[] json_edges = gson.fromJson(jsonObject.get("Edges").toString(), Edge[].class);
             JSONArray json_nodes = jsonObject.getJSONArray("Nodes");
             HashMap<Integer, NodeData> nodes = new HashMap<>();
             HashMap<Integer, HashMap<Integer, EdgeData>> edges = new HashMap<>();
