@@ -1,16 +1,16 @@
 import api.DirectedWeightedGraph;
-import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
 import api.NodeData;
 import com.google.gson.Gson;
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 
 public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
     private DWGraph graph;
@@ -38,13 +38,41 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
     @Override
     public DirectedWeightedGraph copy() {
-        return new DWGraph(this.graph);
+//        return new DWGraph(this.graph);
+        return null;
     }
 
     @Override
     public boolean isConnected() {
         return false;
     }
+
+//    private boolean DFS() {
+//        HashMap<Integer, NodeData> nodes = graph.getNodes();
+//        HashMap<Integer, HashMap<Integer, EdgeData>> edges = graph.getEdges();
+//        Stack<Node> stack = new Stack<>();
+//        for (NodeData n: graph.getEdges().) {
+//            Node curr_node = (Node) n;
+//            curr_node.setC(Node.Color.WHITE);
+//        }
+//        for (NodeData n: nodes.values()) {
+//            Node curr_node = (Node) n;
+//            if(curr_node.getC().equals(Node.Color.WHITE)){
+//
+//            }
+//        }
+//
+//    }
+//
+//    private void DFSVisit(Stack<Node> s){
+//        Node n = s.pop();
+//        n.setC(Node.Color.GRAY);
+//        for (EdgeData e : graph.getEdges().get(n.getKey()).values()) {
+//
+//
+//        }
+//
+//    }
 
     @Override
     public double shortestPathDist(int src, int dest) {
@@ -77,6 +105,8 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         try {
             Gson gson = new Gson();
             JSONObject jsonObject = new JSONObject(new String(Files.readAllBytes(Paths.get(file))));
+//            String[] json_edges = gson.fromJson(String.valueOf(jsonObject.get("Edges")), String[].class);
+
             Edge[] json_edges = gson.fromJson(jsonObject.get("Edges").toString(), Edge[].class);
             JSONArray json_nodes = jsonObject.getJSONArray("Nodes");
             HashMap<Integer, NodeData> nodes = new HashMap<>();
@@ -102,7 +132,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
     public static void main(String[] args) {
         DWGraphAlgo dw = new DWGraphAlgo("data/G1.json");
         dw.load(dw.filename);
-        System.out.println(dw.graph);
+        System.out.println(dw.graph.getEdges());
 
     }
 }

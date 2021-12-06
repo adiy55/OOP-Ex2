@@ -227,4 +227,12 @@ public class DWGraph implements api.DirectedWeightedGraph {
                 ", modeCount=" + modeCount +
                 '}';
     }
+
+    public HashMap<Integer, NodeData> getNodes() {
+        return nodes;
+    }
+
+    public HashMap<Integer, HashMap<Integer, EdgeData>> getEdges() {
+        return edges;
+    }
 }

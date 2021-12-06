@@ -11,12 +11,20 @@ public class Node implements api.NodeData {
     private HashSet<Integer> neighbors; // node id (the src) with an edge that dest == this node
     private String info;
     private int tag;
+    private Color c;
+
+    public enum Color {
+        WHITE,
+        GRAY,
+        BLACK
+    }
 
     public Node(int id, GeoLocation loc) {
         this.id = id;
         this.location = loc;
         this.weight = 0;
         this.neighbors = new HashSet<>(); // todo: how to add neighbors
+        this.c = Color.WHITE;
     }
 
     public Node(Node old) {
@@ -26,6 +34,7 @@ public class Node implements api.NodeData {
         this.neighbors = old.neighbors;
         this.info = old.info;
         this.tag = old.tag;
+        this.c = Color.WHITE;
     }
 
     public static Node deserializeNode(String json) {
@@ -103,6 +112,14 @@ public class Node implements api.NodeData {
         neighbors.remove(neighbor_id);
     }
 
+    public Color getC() {
+        return c;
+    }
+
+    public void setC(Color c) {
+        this.c = c;
+    }
+
     @Override
     public String toString() {
         return "Node{" +
@@ -111,3 +128,4 @@ public class Node implements api.NodeData {
                 '}';
     }
 }
+

@@ -6,20 +6,20 @@ import java.security.spec.ECGenParameterSpec;
 public class Edge implements api.EdgeData {
     private int src;
     private int dest;
-    private double weight;
+    private double w;
     private String info;
     private int tag;
 
-    public Edge(int src, double weight, int dest) {
+    public Edge(int src, double w, int dest) {
         this.src = src;
-        this.weight = weight;
+        this.w = w;
         this.dest = dest;
     }
 
     public Edge(Edge e) {
         this.src = e.src;
         this.dest = e.dest;
-        this.weight = e.weight;
+        this.w = e.w;
         this.info = e.info;
         this.tag = e.tag;
     }
@@ -36,7 +36,7 @@ public class Edge implements api.EdgeData {
 
     @Override
     public double getWeight() {
-        return this.weight;
+        return this.w;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class Edge implements api.EdgeData {
         return "Edge{" +
                 "src=" + src +
                 ", dest=" + dest +
-                ", weight=" + weight +
+                ", weight=" + w +
                 '}';
     }
 }
