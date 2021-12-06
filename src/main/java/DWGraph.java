@@ -4,6 +4,7 @@ import api.NodeData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 // todo: should we catch exceptions?
 public class DWGraph implements api.DirectedWeightedGraph {
@@ -72,7 +73,7 @@ public class DWGraph implements api.DirectedWeightedGraph {
 
     @Override
     public Iterator<NodeData> nodeIter() {
-        return new nodeIterator();
+        return new nodeIterator(); // todo: finish iterator
     }
 
     private class nodeIterator implements Iterator<NodeData> {
@@ -106,15 +107,20 @@ public class DWGraph implements api.DirectedWeightedGraph {
 
     @Override
     public Iterator<EdgeData> edgeIter() {
-        return new allEdgesIterator();
+        return new edgesIterator();
     }
 
-    private class allEdgesIterator implements Iterator<EdgeData> {
-        private final ArrayList<EdgeData> data;
-        private final int iter_mc;
+    @Override
+    public Iterator<EdgeData> edgeIter(int node_id) {
+        return new edgesIterator(node_id);
+    }
+
+    private class edgesIterator implements Iterator<EdgeData> {
+        private ArrayList<EdgeData> data;
+        private int iter_mc;
         private int index;
 
-        public allEdgesIterator() {
+        public edgesIterator() {
             data = new ArrayList<>();
             iter_mc = modeCount;
             index = 0;
@@ -123,35 +129,7 @@ public class DWGraph implements api.DirectedWeightedGraph {
             }
         }
 
-        @Override
-        public boolean hasNext() {
-            if (iter_mc != modeCount) {
-                throw new RuntimeException("Invalid iterator!");
-            }
-            return index < data.size();
-        }
-
-        @Override
-        public EdgeData next() {
-            if (iter_mc != modeCount) {
-                throw new RuntimeException("Invalid iterator!");
-            }
-            return data.get(index++);
-        }
-    }
-
-    // todo: remove method in iterators???
-    @Override
-    public Iterator<EdgeData> edgeIter(int node_id) {
-        return new edgeIterator(node_id);
-    }
-
-    private class edgeIterator implements Iterator<EdgeData> {
-        private final ArrayList<EdgeData> data;
-        private final int iter_mc;
-        private int index;
-
-        public edgeIterator(int node_id) {
+        public edgesIterator(int node_id) {
             data = new ArrayList<>();
             data.addAll(edges.get(node_id).values());
             iter_mc = modeCount;
@@ -172,6 +150,20 @@ public class DWGraph implements api.DirectedWeightedGraph {
                 throw new RuntimeException("Invalid iterator!");
             }
             return data.get(index++);
+        }
+
+        @Override
+        public void remove() {
+            if (iter_mc != modeCount) {
+                throw new RuntimeException("Invalid iterator!");
+            }
+            removeEdge(data.get(index).getSrc(), data.get(index).getDest());
+            iter_mc++;
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super EdgeData> action) {
+            data.subList(index + 1, data.size() - 1).forEach(action);
         }
     }
 
