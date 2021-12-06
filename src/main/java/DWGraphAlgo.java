@@ -47,6 +47,33 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         return false;
     }
 
+    //    private boolean DFS() {
+//        HashMap<Integer, NodeData> nodes = graph.getNodes();
+//        HashMap<Integer, HashMap<Integer, EdgeData>> edges = graph.getEdges();
+//        Stack<Node> stack = new Stack<>();
+//        for (NodeData n: graph.getEdges().) {
+//            Node curr_node = (Node) n;
+//            curr_node.setC(Node.Color.WHITE);
+//        }
+//        for (NodeData n: nodes.values()) {
+//            Node curr_node = (Node) n;
+//            if(curr_node.getC().equals(Node.Color.WHITE)){
+//
+//            }
+//        }
+//
+//    }
+//
+//    private void DFSVisit(Stack<Node> s){
+//        Node n = s.pop();
+//        n.setC(Node.Color.GRAY);
+//        for (EdgeData e : graph.getEdges().get(n.getKey()).values()) {
+//
+//
+//        }
+//
+//    }
+
 //    private Object[] floydWarshall() {
 //        double[][] distances = new double[this.graph.nodeSize()][this.graph.nodeSize()];
 //        for (int i = 0; i < distances.length; i++) {
