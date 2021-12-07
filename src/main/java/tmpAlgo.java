@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
+
+import static javafx.application.Application.launch;
 
 public class tmpAlgo implements api.DirectedWeightedGraphAlgorithms {
     private DWGraph graph;
@@ -28,7 +31,22 @@ public class tmpAlgo implements api.DirectedWeightedGraphAlgorithms {
 
     @Override
     public void init(DirectedWeightedGraph g) {
-
+        Iterator<NodeData> node_iter = g.nodeIter();
+        Iterator<EdgeData> edge_iter = g.edgeIter();
+        HashMap<Integer, NodeData> nodes = new HashMap<>();
+        HashMap<Integer, HashMap<Integer, EdgeData>> edges = new HashMap<>();
+        while (node_iter.hasNext()) {
+            NodeData n = node_iter.next();
+            nodes.put(n.getKey(), new Node(n.getKey(), new GeoLoc(n.getLocation().x(), n.getLocation().y(), n.getLocation().z())));
+            edges.put(n.getKey(), new HashMap<>());
+        }
+        while (edge_iter.hasNext()) {
+            EdgeData e = edge_iter.next();
+            edges.get(e.getSrc()).put(e.getDest(), new Edge(e.getSrc(), e.getWeight(), e.getDest()));
+            Node n = (Node) nodes.get(e.getDest());
+            n.addNeighbor(e.getSrc());
+        }
+        graph = new DWGraph(nodes, edges);
     }
 
     @Override
@@ -51,7 +69,7 @@ public class tmpAlgo implements api.DirectedWeightedGraphAlgorithms {
             Node curr_node = (Node) graph.getNodes().get(i);
             curr_node.setC(Node.Color.WHITE);
         }
-        return DFS(this.graph, start_id) && DFS(transposeEdges(), start_id);
+        return DFSIter(this.graph, start_id) && DFSIter(transposeEdges(), start_id);
     }
 
     private boolean DFS(DWGraph graph, int start_id) {
@@ -76,6 +94,35 @@ public class tmpAlgo implements api.DirectedWeightedGraphAlgorithms {
             }
         }
         n.setC(Node.Color.BLACK);
+    }
+
+    private boolean DFSIter(DWGraph graph, int start_id) {
+        if (start_id == -1) return false;
+        Node start_node = (Node) graph.getNode(start_id);
+        Stack<NodeData> stack = new Stack<>();
+        stack.push(start_node);
+        DFSVisitIter(stack, graph);
+        for (NodeData n : graph.getNodes().values()) {
+            Node curr_node = (Node) n;
+            if (curr_node.getC().equals(Node.Color.WHITE)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void DFSVisitIter(Stack<NodeData> stack, DWGraph graph) {
+        while (!stack.isEmpty()) {
+            Node n = (Node) stack.pop();
+            n.setC(Node.Color.GRAY);
+            for (Integer dest : graph.getEdges().get(n.getKey()).keySet()) {
+                Node dest_node = (Node) graph.getNode(dest);
+                if (dest_node.getC().equals(Node.Color.WHITE)) {
+                    stack.push(dest_node);
+                }
+            }
+            n.setC(Node.Color.BLACK);
+        }
     }
 
     public DWGraph transposeEdges() {
