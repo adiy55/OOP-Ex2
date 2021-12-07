@@ -76,45 +76,36 @@ public class DWGraph implements api.DirectedWeightedGraph {
 
     @Override
     public Iterator<NodeData> nodeIter() {
-        return new nodeIterator(); // todo: finish iterator
-    }
+        return new Iterator<>() {
+            private ArrayList<NodeData> data = new ArrayList<>(nodes.values());
+            private int iter_mc = modeCount;
+            private int index = 0;
 
-    private class nodeIterator implements Iterator<NodeData> {
-        private ArrayList<NodeData> data;
-        private int iter_mc;
-        private int index;
+            @Override
+            public boolean hasNext() {
+                if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
+                return index < data.size();
+            }
 
-        public nodeIterator() {
-            data = new ArrayList<>();
-            data.addAll(nodes.values());
-            iter_mc = modeCount;
-            index = 0;
-        }
+            @Override
+            public NodeData next() {
+                if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
+                return data.get(index++);
+            }
 
-        @Override
-        public boolean hasNext() {
-            if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
-            return index < data.size();
-        }
+            @Override
+            public void remove() {
+                if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
+                removeNode(data.get(index).getKey());
+                iter_mc++;
+            }
 
-        @Override
-        public NodeData next() {
-            if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
-            return data.get(index++);
-        }
-
-        @Override
-        public void remove() {
-            if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
-            removeNode(data.get(index).getKey());
-            iter_mc++;
-        }
-
-        @Override
-        public void forEachRemaining(Consumer<? super NodeData> action) {
-            if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
-            data.subList(index + 1, data.size() - 1).forEach(action);
-        }
+            @Override
+            public void forEachRemaining(Consumer<? super NodeData> action) {
+                if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
+                data.subList(index + 1, data.size() - 1).forEach(action);
+            }
+        };
     }
 
     public int neightbourCount(int key) {
