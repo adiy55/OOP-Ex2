@@ -46,6 +46,9 @@ public class DWGraph implements api.DirectedWeightedGraph {
     @Override
     public void addNode(NodeData n) {
         nodes.put(n.getKey(), n);
+        if(!edges.containsKey(n.getKey())){
+            edges.put(n.getKey(), new HashMap<>());
+        }
     }
 
     /*
@@ -105,7 +108,7 @@ public class DWGraph implements api.DirectedWeightedGraph {
         }
     }
 
-    public int neightbourCount (int key) {
+    public int neightbourCount(int key) {
         return this.edges.get(key).size();
     }
 
