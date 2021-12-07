@@ -145,27 +145,31 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
             NodeData currNode = itr.next();
             if (currNode.getKey() != src.getKey()) {
                 map.put(currNode.getKey(), new double[]{Double.MAX_VALUE, 0.5});
+                unvisited.addLast(currNode.getKey());
             }
-            unvisited.addLast(currNode.getKey());
         }
         //initialization complete
-
+        NodeData currNode = src;
+        double currVal = 0;
         while (!unvisited.isEmpty()) { //while there are still unvisited nodes
-            double[] tempArr = smallestNeigh(src, visited);
-            NodeData currNode = this.graph.getNode((int) tempArr[0]); //visit unvisited vertex with smallest known distance from
-            // current vertex
             Iterator<EdgeData> itrNeigh = this.graph.edgeIter(currNode.getKey());
             while (itrNeigh.hasNext()) { // for each unvisited neighbour of the current vertex (from here....
                 EdgeData neighEdge = itrNeigh.next();
                 if (!visited.contains(neighEdge.getDest())) { // ...to here)
-                    double weightToCompare = neighEdge.getWeight() + tempArr[1];
+                    double weightToCompare = neighEdge.getWeight() + currVal;
                     if (map.get(neighEdge.getDest())[0] > weightToCompare) {
-                        map.put(neighEdge.getDest(), new double[]{weightToCompare, neighEdge.getDest()});
+                        map.put(neighEdge.getDest(), new double[]{weightToCompare, neighEdge.getSrc()});
                     }
                 }
             }
             visited.addLast(currNode.getKey());
             unvisited.removeFirstOccurrence(currNode.getKey());
+
+            double[] smallestNeighbourKeyAndWeight = smallestNeigh(currNode, visited);
+            currNode = this.graph.getNode((int) smallestNeighbourKeyAndWeight[0]); //visit unvisited vertex with smallest known distance from
+            // current vertex
+//            currVal = smallestNeighbourKeyAndWeight[1];
+            currVal = map.get(currNode.getKey())[0];
         }
         return map;
     }
