@@ -8,8 +8,8 @@ import java.util.function.Consumer;
 
 // todo: should we catch exceptions?
 public class DWGraph implements api.DirectedWeightedGraph {
-    private final HashMap<Integer, NodeData> nodes;
-    private final HashMap<Integer, HashMap<Integer, EdgeData>> edges; // key = src, value: key = dest, value = edge
+    private HashMap<Integer, NodeData> nodes;
+    private HashMap<Integer, HashMap<Integer, EdgeData>> edges; // key = src, value: key = dest, value = edge
     private int numEdges;
     private int modeCount;
 
@@ -46,7 +46,7 @@ public class DWGraph implements api.DirectedWeightedGraph {
     @Override
     public void addNode(NodeData n) {
         nodes.put(n.getKey(), n);
-        if(!edges.containsKey(n.getKey())){
+        if (!edges.containsKey(n.getKey())) {
             edges.put(n.getKey(), new HashMap<>());
         }
     }
@@ -80,8 +80,8 @@ public class DWGraph implements api.DirectedWeightedGraph {
     }
 
     private class nodeIterator implements Iterator<NodeData> {
-        private final ArrayList<NodeData> data;
-        private final int iter_mc;
+        private ArrayList<NodeData> data;
+        private int iter_mc;
         private int index;
 
         public nodeIterator() {
@@ -93,18 +93,27 @@ public class DWGraph implements api.DirectedWeightedGraph {
 
         @Override
         public boolean hasNext() {
-            if (iter_mc != modeCount) {
-                throw new RuntimeException("Invalid iterator!");
-            }
+            if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
             return index < data.size();
         }
 
         @Override
         public NodeData next() {
-            if (iter_mc != modeCount) {
-                throw new RuntimeException("Invalid iterator!");
-            }
+            if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
             return data.get(index++);
+        }
+
+        @Override
+        public void remove() {
+            if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
+            removeNode(data.get(index).getKey());
+            iter_mc++;
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super NodeData> action) {
+            if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
+            data.subList(index + 1, data.size() - 1).forEach(action);
         }
     }
 
@@ -145,31 +154,26 @@ public class DWGraph implements api.DirectedWeightedGraph {
 
         @Override
         public boolean hasNext() {
-            if (iter_mc != modeCount) {
-                throw new RuntimeException("Invalid iterator!");
-            }
+            if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
             return index < data.size();
         }
 
         @Override
         public EdgeData next() {
-            if (iter_mc != modeCount) {
-                throw new RuntimeException("Invalid iterator!");
-            }
+            if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
             return data.get(index++);
         }
 
         @Override
         public void remove() {
-            if (iter_mc != modeCount) {
-                throw new RuntimeException("Invalid iterator!");
-            }
+            if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
             removeEdge(data.get(index).getSrc(), data.get(index).getDest());
             iter_mc++;
         }
 
         @Override
         public void forEachRemaining(Consumer<? super EdgeData> action) {
+            if (iter_mc != modeCount) throw new RuntimeException("Invalid iterator!");
             data.subList(index + 1, data.size() - 1).forEach(action);
         }
     }
