@@ -24,6 +24,16 @@ public class Edge implements api.EdgeData {
         this.tag = e.tag;
     }
 
+    public boolean equals (Object o) {
+        if (! (o instanceof Edge)) return false;
+        Edge e = (Edge) o;
+        if (e.src != this.src) return false;
+        if (e.dest != this.dest) return false;
+        if (e.w != this.w) return false;
+        if (!e.info.equals(this.info)) return false;
+        if (e.tag != this.tag) return false;
+    }
+
     @Override
     public int getSrc() {
         return this.src;
