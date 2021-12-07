@@ -165,8 +165,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
             visited.addLast(currNode.getKey());
             unvisited.removeFirstOccurrence(currNode.getKey());
 
-            double[] smallestNeighbourKeyAndWeight = smallestNeigh(currNode, visited);
-            currNode = this.graph.getNode((int) smallestNeighbourKeyAndWeight[0]); //visit unvisited vertex with smallest known distance from
+            currNode = this.graph.getNode(smallestNeigh(currNode, visited)); //unvisited vertex with smallest known distance from
             // current vertex
 //            currVal = smallestNeighbourKeyAndWeight[1];
             currVal = map.get(currNode.getKey())[0];
@@ -174,7 +173,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         return map;
     }
 
-    private double[] smallestNeigh(NodeData src, LinkedList<Integer> visited) {
+    private int smallestNeigh(NodeData src, LinkedList<Integer> visited) {
         double minVal = Double.MAX_VALUE;
         int minKey = 0;
         Iterator<EdgeData> itrNeigh = this.graph.edgeIter(src.getKey());
@@ -187,7 +186,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                 }
             }
         }
-        return new double[]{minKey, minVal};
+        return minKey;
     }
 
 
