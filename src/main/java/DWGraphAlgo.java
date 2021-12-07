@@ -8,10 +8,7 @@ import org.json.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
     private DWGraph graph;
@@ -72,63 +69,6 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 //
 //        }
 //
-//    }
-
-//    private Object[] floydWarshall() {
-//        double[][] distances = new double[this.graph.nodeSize()][this.graph.nodeSize()];
-//        for (int i = 0; i < distances.length; i++) {
-//            for (int j = 0; j < distances.length; j++) {
-//                distances[i][j] = Integer.MAX_VALUE;
-//            }
-//        }
-//        int[][] nexts = new int[this.graph.nodeSize()][this.graph.nodeSize()];
-//        for (int i = 0; i < distances.length; i++) {
-//            for (int j = 0; j < distances.length; j++) {
-//                nexts[i][j] = -1;
-//            }
-//        }
-//
-//        Iterator<EdgeData> itrEdges = this.graph.edgeIter();
-//        while (itrEdges.hasNext()) {
-//            EdgeData currEdge = itrEdges.next();
-//            Node tempSrcNode = (Node)(this.graph.getNode(currEdge.getSrc()));
-//            Node tempDestNode = (Node)(this.graph.getNode(currEdge.getDest()));
-//            distances[tempSrcNode.getOurID()][tempDestNode.getOurID()] = currEdge.getWeight();
-//            nexts[tempSrcNode.getOurID()][tempDestNode.getOurID()] = tempDestNode.getOurID();
-//        }
-//
-//        Iterator<NodeData> itrNodes = this.graph.nodeIter();
-//        while (itrEdges.hasNext()) {
-//            Node currNode = (Node) itrNodes.next();
-//            distances[currNode.getOurID()][currNode.getOurID()] = 0;
-//            nexts[currNode.getOurID()][currNode.getOurID()] = currNode.getOurID();
-//        }
-//
-//        for (int k = 0; k < this.graph.nodeSize(); k++) { // standard Floyd-Warshall implementation
-//            for (int i = 0; i < this.graph.nodeSize(); i++) {
-//                for (int j = 0; j < this.graph.nodeSize(); j++) {
-//                    if (distances[i][j] > distances[i][k] + distances[k][j]) {
-//                        distances[i][j] = distances[i][k] + distances[k][j];
-//                        nexts[i][j] = nexts[i][k];
-//                    }
-//                }
-//            }
-//        }
-//        Object[] arr = new Object[2];
-//        arr[0] = distances;
-//        arr[1] = nexts;
-//        return arr;
-//    }
-//
-//    private void path(int[][] nexts, Node src, Node dest) {
-//        LinkedList<NodeData> currPath = new LinkedList<>();
-//        if (nexts[src.getOurID()][dest.getOurID()] == -1) {
-//            return;
-//        }
-//        currPath.addLast(src);
-//        while (src.getOurID() != dest.getOurID()) {
-//            dest = nexts[][];
-//        }
 //    }
 
     public HashMap<Integer, double[]> DijkstrasAlgo(NodeData src) {
@@ -192,17 +132,56 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
     @Override
     public double shortestPathDist(int src, int dest) {
-        return 0;
+        double dist = this.DijkstrasAlgo(this.graph.getNode(src)).get(dest)[0];
+        if (dist == Double.MAX_VALUE) return -1;
+        return dist;
     }
 
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
-        return null;
+        HashMap<Integer, double[]> map = this.DijkstrasAlgo(this.graph.getNode(src));
+        if (map.get(dest)[0] == Double.MAX_VALUE) return null; //if no path exists returns null
+
+        LinkedList<NodeData> ret = new LinkedList<>();
+        int currNodeKey = dest;
+        while (currNodeKey != src) {
+            ret.addFirst(this.graph.getNode(currNodeKey));
+            currNodeKey = (int) map.get(currNodeKey)[1];
+        }
+        ret.addFirst(this.graph.getNode(currNodeKey));
+        return ret;
     }
 
     @Override
     public NodeData center() {
-        return null;
+        int[] maxKeys = new int[graph.nodeSize()];
+        double[] maxValues = new double[graph.nodeSize()];
+
+        Iterator<NodeData> itr = graph.nodeIter();
+        int ind = 0;
+        while(itr.hasNext()) {
+            NodeData currNode = itr.next();
+            maxKeys[ind] = currNode.getKey(); //add the key of the node to the array of keys
+            HashMap<Integer, double[]> map = this.DijkstrasAlgo(currNode);
+            double currMaxVal = 0;
+            for (Map.Entry<Integer, double[]> entry : map.entrySet()) {
+                if (currMaxVal < entry.getValue()[0]) {
+                    currMaxVal = entry.getValue()[0];
+                }
+            }
+            maxValues[ind] = currMaxVal;
+            ind++;
+        }
+
+        double minValueInArr = Double.MAX_VALUE;
+        int minValIndex = 0;
+        for (int i = 0; i < maxValues.length; i++) {
+            if (maxValues[i] < minValueInArr) {
+                minValueInArr = maxValues[i];
+                minValIndex = i;
+            }
+        }
+        return this.graph.getNode(maxKeys[minValIndex]);
     }
 
     @Override
