@@ -2,6 +2,7 @@ import api.NodeData;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +31,14 @@ class DWGraphAlgoTest {
         assertEquals(5.0, test1.shortestPathDist(2, 4), EPS);
         assertEquals(6.0, test1.shortestPathDist(1, 4), EPS);
         assertEquals(7.0, test1.shortestPathDist(0, 4), EPS);
+
+        test1 = new DWGraphAlgo("data/G1.json");
+        assertEquals(7.436, test1.shortestPathDist(0, 8), 0.001);
+
+        test1 = new DWGraphAlgo("data/Test2.json");
+        //graph picture: https://prnt.sc/22b1x3v
+        assertEquals(3, test1.shortestPathDist(3, 2));
+        assertEquals(9, test1.shortestPathDist(4, 0));
     }
 
     @Test
@@ -48,16 +57,42 @@ class DWGraphAlgoTest {
         assertEquals(1, lst.get(1).getKey());
         assertEquals(3, lst.get(2).getKey());
         assertEquals(4, lst.get(3).getKey());
+
+
+        test1 = new DWGraphAlgo("data/G1.json");
+        lst = test1.shortestPath(0,8);
+        assertEquals(0, lst.get(0).getKey());
+        assertEquals(1, lst.get(1).getKey());
+        assertEquals(2, lst.get(2).getKey());
+        assertEquals(6, lst.get(3).getKey());
+        assertEquals(7, lst.get(4).getKey());
+        assertEquals(8, lst.get(5).getKey());
+
+        test1 = new DWGraphAlgo("data/Test2.json");
+        //graph picture: https://prnt.sc/22b1x3v
+        lst = test1.shortestPath(4, 0);
+        assertEquals(4, lst.get(0).getKey());
+        assertEquals(3, lst.get(1).getKey());
+        assertEquals(1, lst.get(2).getKey());
+        assertEquals(0, lst.get(3).getKey());
     }
 
     @Test
-    void center() {
-        DWGraphAlgo test1 = new DWGraphAlgo("data/Test1.json");
-        assertEquals(0, test1.center().getKey());
+    void center() { //TODO: finish and debug
+        DWGraphAlgo test = new DWGraphAlgo("data/Test1.json");
+        assertEquals(0, test.center().getKey());
+
+        test = new DWGraphAlgo("data/Test2.json");
+        assertEquals(3, test.center().getKey());
     }
 
     @Test
     void tsp() {
+        DWGraphAlgo test = new DWGraphAlgo("data/Test2.json");
+        List<NodeData> lstTest = new LinkedList<NodeData>();
+        lstTest.add(test.getGraph().getNode(4));
+        lstTest.add(test.getGraph().getNode(2));
+        System.out.println(test.tsp(lstTest));
     }
 
     @Test

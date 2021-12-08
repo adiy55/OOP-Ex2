@@ -72,6 +72,10 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 //    }
 
     public HashMap<Integer, double[]> DijkstrasAlgo(NodeData src) {
+        /*
+        Idea for implementation of algorithm taken from:
+        https://www.youtube.com/watch?v=pVfj6mxhdMw
+         */
         HashMap<Integer, double[]> map = new HashMap<>();
         //ret[0] == distances
         //ret[1] == previous Node (key of node) visited (to calculate path)
@@ -175,7 +179,8 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
         double minValueInArr = Double.MAX_VALUE;
         int minValIndex = 0;
-        for (int i = 0; i < maxValues.length; i++) {
+        for (int i = 0; i < maxValues.length; i++) { //checking for min value out of all maxValues array.
+            // Saving its corresponding key from the keys array
             if (maxValues[i] < minValueInArr) {
                 minValueInArr = maxValues[i];
                 minValIndex = i;
@@ -186,7 +191,39 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
-        return null;
+        LinkedList<NodeData> ret = new LinkedList<>(); //list to be returned
+        NodeData currNode = cities.get(0); //current node we are working on
+        ret.add(currNode);
+        HashSet<NodeData> visitedCities = new HashSet<>();
+        while (!cities.isEmpty()) {
+            visitedCities.add(currNode);
+            double minDistance = Double.MAX_VALUE;
+            NodeData nextNode = currNode;
+            cities.remove(currNode);
+            List<NodeData> path = new LinkedList<>();
+
+            for (NodeData node : cities) {
+                if (!visitedCities.contains(node)) {
+                    double currDistance = this.shortestPathDist(currNode.getKey(), node.getKey());
+                    if (currDistance < minDistance) {
+                        minDistance = currDistance;
+                        nextNode = node;
+                        path = this.shortestPath(currNode.getKey(), node.getKey());
+                    }
+                }
+            }
+            currNode = nextNode;
+            for (NodeData node: path) {
+                if (node != path.get(0)) {
+                    ret.addLast(node);
+                    visitedCities.add(node);
+                    if (cities.contains(node)) {
+                        cities.remove(node);
+                    }
+                }
+            }
+        }
+        return ret;
     }
 
     @Override
