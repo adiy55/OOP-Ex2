@@ -1,37 +1,30 @@
-import api.DirectedWeightedGraph;
-import api.DirectedWeightedGraphAlgorithms;
-import api.EdgeData;
-import api.NodeData;
 import javafx.event.ActionEvent;
-import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 
+// animation timer
 // todo: action to insert new path
 //          action to show algorithms (i.e. mark shortest path)
 public class EventsUI {
-    public static DirectedWeightedGraphAlgorithms algo;
+//    public static DirectedWeightedGraphAlgorithms algo;
 
-    public static ArrayList<Line> initGraphUI() {
-        DirectedWeightedGraph graph = algo.getGraph();
-        ArrayList<Line> lines = new ArrayList<>();
-        Iterator<EdgeData> edge_iter = graph.edgeIter();
-        while (edge_iter.hasNext()) {
-            EdgeData e = edge_iter.next();
-            NodeData src = graph.getNode(e.getSrc());
-            NodeData dest = graph.getNode(e.getDest());
-            lines.add(new Line(src.getLocation().x() * 10000000, src.getLocation().y() * 10000000, dest.getLocation().x(), dest.getLocation().y()));
-        }
-        return lines;
-    }
+//    public static ArrayList<Line> initGraphUI() {
+//        DirectedWeightedGraph graph = algo.getGraph();
+//        ArrayList<Line> lines = new ArrayList<>();
+//        Iterator<EdgeData> edge_iter = graph.edgeIter();
+//        while (edge_iter.hasNext()) {
+//            EdgeData e = edge_iter.next();
+//            NodeData src = graph.getNode(e.getSrc());
+//            NodeData dest = graph.getNode(e.getDest());
+//            lines.add(new Line(src.getLocation().x() * 10000000, src.getLocation().y() * 10000000, dest.getLocation().x(), dest.getLocation().y()));
+//        }
+//        return lines;
+//    }
 
     public static Stage getInputNode() {
 
@@ -57,7 +50,7 @@ public class EventsUI {
                     text4.getText();
                     GeoLoc gl = new GeoLoc(Double.parseDouble(text2.getText()), Double.parseDouble(text3.getText()), Double.parseDouble(text4.getText()));
                     Node n = new Node(Integer.parseInt(text1.getText()), gl);
-                    algo.getGraph().addNode(n);
+                    GraphUI.algo.getGraph().addNode(n);
                     l.setText(String.format("Node %d was added", n.getKey()));
 
                 }
@@ -91,7 +84,7 @@ public class EventsUI {
                     text1.getText();
                     text2.getText();
                     text3.getText();
-                    algo.getGraph().connect(Integer.parseInt(text1.getText()), Integer.parseInt(text2.getText()), Double.parseDouble(text3.getText()));
+                    GraphUI.algo.getGraph().connect(Integer.parseInt(text1.getText()), Integer.parseInt(text2.getText()), Double.parseDouble(text3.getText()));
                     l.setText(String.format("Edge (%s,%s) was added", text1.getText(), text2.getText()));
                 }
         );
@@ -118,7 +111,7 @@ public class EventsUI {
         button.setOnAction((ActionEvent event) ->
                 {
                     text1.getText();
-                    algo.getGraph().removeNode(Integer.parseInt(text1.getText()));
+                    GraphUI.algo.getGraph().removeNode(Integer.parseInt(text1.getText()));
                     l.setText(String.format("Node %s was removed", text1.getText()));
                 }
         );
@@ -149,7 +142,7 @@ public class EventsUI {
                 {
                     text1.getText();
                     text2.getText();
-                    algo.getGraph().removeEdge(Integer.parseInt(text1.getText()), Integer.parseInt(text2.getText()));
+                    GraphUI.algo.getGraph().removeEdge(Integer.parseInt(text1.getText()), Integer.parseInt(text2.getText()));
                     l.setText(String.format("Edge (%s,%s) was removed", text1.getText(), text2.getText()));
                 }
         );

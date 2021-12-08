@@ -1,3 +1,5 @@
+import api.DirectedWeightedGraphAlgorithms;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -8,25 +10,29 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 // todo: fix margins, update graph after adding a node
 public class GraphUI extends Application {
+    final static int width = 500;
+    final static int height = 500;
+    static DirectedWeightedGraphAlgorithms algo;
+    private Pane pane;
+    private VBox vbox;
 
     @Override
     public void start(Stage stage) {
         initGUI(stage);
-
     }
 
     private void initGUI(Stage stage) {
         stage.setTitle("Directed Weighted Graph UI");
-        Group root = new Group();
-        Scene scene = new Scene(new VBox(), 400, 350);
+        pane = new Pane();
 
         MenuBar menu_bar = new MenuBar();
-        VBox vbox = new VBox();
+        vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
         vbox.setSpacing(10);
         vbox.setPadding(new Insets(0, 10, 0, 10));
@@ -64,15 +70,16 @@ public class GraphUI extends Application {
         EventHandler<ActionEvent> event = actionEvent -> dialog.show();
         b.setOnAction(event);
 
-        root.getChildren().addAll(EventsUI.initGraphUI());
+        AnimationTimer timerUI = new TimerUI(algo, pane);
+        timerUI.start();
 
         menu_bar.getMenus().addAll(menu_file, menu_edit);
         ToolBar toolbar = new ToolBar();
         toolbar.getItems().addAll(menu_bar, b);
-        ((VBox) scene.getRoot()).getChildren().addAll(toolbar, new HBox(root), vbox);
+        vbox.getChildren().addAll(toolbar, pane);
+        Scene scene = new Scene(vbox, height, width);
         stage.setScene(scene);
         stage.show();
-
 
     }
 
