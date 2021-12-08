@@ -99,7 +99,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
             Iterator<EdgeData> itrNeigh = this.graph.edgeIter(currNode.getKey());
             while (itrNeigh.hasNext()) { // for each unvisited neighbour of the current vertex (from here....
                 EdgeData neighEdge = itrNeigh.next();
-                if (!visited.contains(neighEdge.getDest())) { // ...to here)
+                if (!visited.contains(neighEdge.getSrc())) { // ...to here)
                     double weightToCompare = neighEdge.getWeight() + currVal;
                     if (map.get(neighEdge.getDest())[0] > weightToCompare) {
                         map.put(neighEdge.getDest(), new double[]{weightToCompare, neighEdge.getSrc()});
@@ -109,30 +109,28 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
             visited.addLast(currNode.getKey());
             unvisited.removeFirstOccurrence(currNode.getKey());
 
-            currNode = this.graph.getNode(smallestNeigh(currNode, visited)); //unvisited vertex with smallest known distance from
+            currNode = this.graph.getNode(smallestNeigh(currNode, visited, map)); //unvisited vertex with smallest known distance from
             // current vertex
-//            currVal = smallestNeighbourKeyAndWeight[1];
             currVal = map.get(currNode.getKey())[0];
         }
         return map;
     }
 
-    private int smallestNeigh(NodeData src, LinkedList<Integer> visited) {
+    private int smallestNeigh(NodeData src, LinkedList<Integer> visited, HashMap<Integer, double[]> map) {
         double minVal = Double.MAX_VALUE;
         int minKey = 0;
-        Iterator<EdgeData> itrNeigh = this.graph.edgeIter(src.getKey());
+        Iterator<EdgeData> itrNeigh = this.graph.edgeIter();
         while (itrNeigh.hasNext()) {
             EdgeData currEdge = itrNeigh.next();
             if (!visited.contains(currEdge.getDest())) {
-                if (minVal > currEdge.getWeight()) {
-                    minVal = currEdge.getWeight();
+                if (minVal > map.get(currEdge.getDest())[0]) {
+                    minVal = map.get(currEdge.getDest())[0];
                     minKey = currEdge.getDest();
                 }
             }
         }
         return minKey;
     }
-
 
     @Override
     public double shortestPathDist(int src, int dest) {
