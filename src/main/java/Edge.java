@@ -32,6 +32,7 @@ public class Edge implements api.EdgeData {
         if (e.w != this.w) return false;
         if (!e.info.equals(this.info)) return false;
         if (e.tag != this.tag) return false;
+        return true;
     }
 
     @Override
