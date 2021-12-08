@@ -2,6 +2,7 @@ import api.EdgeData;
 import api.NodeData;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class Utilities {
@@ -29,5 +30,13 @@ public class Utilities {
             copy.put(entry.getKey(), new Edge((Edge) entry.getValue()));
         }
         return copy;
+    }
+
+    public static HashSet<Integer> copyNeighbours(HashSet<Integer> old) {
+        HashSet<Integer> ret = new HashSet<>();
+        for (Integer curr : old) {
+            ret.add(curr);
+        }
+        return ret;
     }
 }

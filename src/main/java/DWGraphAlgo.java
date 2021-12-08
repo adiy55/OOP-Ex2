@@ -105,7 +105,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                         map.put(neighEdge.getDest(), new double[]{weightToCompare, neighEdge.getSrc()});
                     }
                 }
-            }
+           }
             visited.addLast(currNode.getKey());
             unvisited.removeFirstOccurrence(currNode.getKey());
 
