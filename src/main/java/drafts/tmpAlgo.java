@@ -1,3 +1,5 @@
+package drafts;
+
 import api.DirectedWeightedGraph;
 import api.EdgeData;
 import api.NodeData;
@@ -12,8 +14,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
-
-import static javafx.application.Application.launch;
 
 public class tmpAlgo implements api.DirectedWeightedGraphAlgorithms {
     private DWGraph graph;
