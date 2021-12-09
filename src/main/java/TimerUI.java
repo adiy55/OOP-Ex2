@@ -26,27 +26,6 @@ public class TimerUI extends AnimationTimer {
         addNodes();
     }
 
-//    private void addNodes() {
-//        Iterator<NodeData> node_iter = algo.getGraph().nodeIter();
-//        while (node_iter.hasNext()) {
-//            NodeData n = node_iter.next();
-//            Point2D point = scaleUI.getAdjustedPoint(n);
-//            Circle circle = new Circle();
-//            circle.setCenterX(point.getX());
-//            circle.setCenterY(point.getY());
-//            circle.setFill(Color.BLACK);
-//            circle.setRadius(5);
-//            start();
-//            this.root.getChildren().add(circle);
-//        }
-//        stop();
-////        try{
-////            Thread.sleep(100);
-////        }catch (InterruptedException e){
-////            e.printStackTrace();
-////        }
-//    }
-
     private void addNodes() {
         Iterator<NodeData> node_iter = algo.getGraph().nodeIter();
         while (node_iter.hasNext()) {
@@ -62,11 +41,11 @@ public class TimerUI extends AnimationTimer {
             addEdges(point, n.getKey());
         }
         stop();
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(100);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void addEdges(Point2D point, int key) {
