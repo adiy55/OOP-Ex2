@@ -108,7 +108,7 @@ public class DWGraph implements api.DirectedWeightedGraph {
         };
     }
 
-    public int neightbourCount(int key) {
+    public int neighbourCount(int key) {
         return this.edges.get(key).size();
     }
 

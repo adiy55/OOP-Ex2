@@ -1,3 +1,60 @@
 @startuml
 'https://plantuml.com/sequence-diagram
+'https://plantuml.com/class-diagram
+
+class DWGraph {
+    - nodes: HashMap<Integer, NodeData>
+    - edges: HashMap<Integer, HashMap<Integer, EdgeData>>
+    - numEdges: int
+    - modeCount: int
+
+    + DWGraph (nodes: HashMap<Integer, NodeData>, edges: HashMap<Integer, HashMap<Integer, EdgeData>>)
+    + DWGraph (g: DWGraph)
+    + getNode (key: int) : NodeData
+    + getEdge (src: int, dest: int) : EdgeData
+    + addNode (n: NodeData) : void
+    + connect (src: int, dest: int, w: double) : void
+    + nodeIter () : Iterator<NodeData>
+    + neighbourCount (key: int) : int
+    + edgeIter () : Iterator<EdgeData>
+    + edgeIter (node_id: int) : Iterator<EdgeData>
+    + edgesIterator.edgesIterator ()
+    + edgesIterator.edgesIterator (node_id: int)
+    + edgesIterator.hasNext () : boolean
+    + edgesIterator.next () : EdgeData
+    + edgesIterator.remove () : void
+    + edgesIterator.forEachRemaining () : void
+    + removeNode (key: int) : NodeData
+    + removeEdge (src: int, dest: int) : EdgeData
+    + nodeSize () : int
+    + edgeSize () : int
+    + getMC () : int
+
+
+}
+
+class DWGraphAlgo {
+
+}
+
+class Edge {
+
+}
+
+class Ex2 {
+
+}
+
+class GeoLoc {
+
+}
+
+class Node {
+
+}
+
+class Utilities {
+
+}
+
 @enduml
