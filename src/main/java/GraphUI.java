@@ -33,6 +33,7 @@ public class GraphUI extends Application {
         vbox = new VBox();
         vbox.setSpacing(10);
         vbox.setPadding(new Insets(0, 10, 0, 10));
+        ToolBar toolbar = new ToolBar();
 
         Label algo_res = new Label();
 
@@ -67,12 +68,14 @@ public class GraphUI extends Application {
         ChoiceDialog<Object> dialog = new ChoiceDialog<>(new Separator(), choices);
         dialog.setTitle("Run Algorithm");
         EventHandler<ActionEvent> event = actionEvent -> {
-
+            dialog.showAndWait();
             if (dialog.getSelectedItem().equals(choices[0])) {
                 String ans = algo.isConnected() ? "The graph is strongly connected" : "The graph is not strongly connected";
                 algo_res.setText(ans);
             } // todo: finish cases
-            dialog.show();
+            else {
+                algo_res.setText("");
+            }
         };
         b.setOnAction(event);
 
@@ -80,10 +83,9 @@ public class GraphUI extends Application {
         timerUI.start();
 
         menu_bar.getMenus().addAll(menu_file, menu_edit);
-        ToolBar toolbar = new ToolBar();
         toolbar.getItems().addAll(menu_bar, b, new Label("Algorithm Output:"), algo_res);
         vbox.getChildren().addAll(toolbar, pane);
-        Scene scene = new Scene(vbox, height+30, width+60);
+        Scene scene = new Scene(vbox, height + 30, width + 60);
         stage.setScene(scene);
         stage.show();
 
