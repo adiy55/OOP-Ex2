@@ -96,7 +96,6 @@ public class EventsUI {
                     double inp3 = Double.parseDouble(text3.getText());
                     if (GraphUI.algo.getGraph().getNode(inp1) != null && GraphUI.algo.getGraph().getNode(inp2) != null) {
                         GraphUI.algo.getGraph().connect(inp1, inp2, inp3);
-
                     }
                     l.setText(String.format("Edge (%d,%d) was added", inp1, inp2));
                     text1.setText("");
@@ -258,6 +257,10 @@ public class EventsUI {
                     int inp2 = Integer.parseInt(text2.getText());
                     if (GraphUI.algo.getGraph().getNode(inp1) != null && GraphUI.algo.getGraph().getNode(inp2) != null) {
                         List<NodeData> ans = GraphUI.algo.shortestPath(inp1, inp2);
+                        ans.forEach(nodeData -> GraphUI.node_ids.add(nodeData.getKey()));
+                        for (int i = 0; i < ans.size() - 1; i++) {
+                            GraphUI.edge_ids.put(ans.get(i).getKey(), ans.get(i + 1).getKey());
+                        }
                         algo_res.setText(String.format("The shortest path is %s", stringPath(ans)));
                     } else {
                         algo_res.setText("No path was found!");

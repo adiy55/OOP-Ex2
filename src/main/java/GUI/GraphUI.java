@@ -1,14 +1,12 @@
 package GUI;
 
 import api.DirectedWeightedGraphAlgorithms;
+import api.EdgeData;
 import api.NodeData;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -19,8 +17,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import javax.swing.*;
 import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
 
 public class GraphUI extends Application {
@@ -29,6 +28,8 @@ public class GraphUI extends Application {
     public static DirectedWeightedGraphAlgorithms algo;
     public static String algo_file;
     public static FileChooser chooser = initFileChooser();
+    public static HashSet<Integer> node_ids = new HashSet<>();
+    public static HashMap<Integer, Integer> edge_ids = new HashMap<>();
     private Pane pane;
     private VBox vbox;
 
@@ -40,14 +41,14 @@ public class GraphUI extends Application {
     private void initGUI(Stage stage) {
         stage.setResizable(false);
         stage.setTitle("Directed Weighted Graph UI");
-        stage.setOnCloseRequest(windowEvent -> {
-            Alert close_event = EventsUI.confirmCloseEvent();
-            Optional<ButtonType> response = close_event.showAndWait();
-            if (response.isPresent() && !ButtonType.OK.equals(response.get())) {
-                windowEvent.consume();
-            }
-
-        });
+//        stage.setOnCloseRequest(windowEvent -> {
+//            Alert close_event = EventsUI.confirmCloseEvent();
+//            Optional<ButtonType> response = close_event.showAndWait();
+//            if (response.isPresent() && !ButtonType.OK.equals(response.get())) {
+//                windowEvent.consume();
+//            }
+//
+//        });
         pane = new Pane();
         vbox = new VBox();
         vbox.setSpacing(10);
@@ -59,10 +60,19 @@ public class GraphUI extends Application {
 
         Menu menu_file = new Menu("File");
         MenuItem exit = new MenuItem("Exit");
-        exit.setOnAction(event -> stage.fireEvent(
-                new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST)));
+//        exit.setOnAction(event -> stage.fireEvent(
+//                new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST)));
+        exit.setOnAction(windowEvent -> {
+            Alert close_event = EventsUI.confirmCloseEvent();
+            Optional<ButtonType> response = close_event.showAndWait();
+            if (response.isPresent() && ButtonType.OK.equals(response.get())) {
+                Platform.exit();
+            }
+        });
+
         MenuItem save = new MenuItem("Save");
         save.setOnAction(actionEvent -> {
+            clear();
             try {
                 File selected_dir = chooser.showSaveDialog(stage);
                 if (algo.save(selected_dir.getAbsolutePath())) {
@@ -77,6 +87,7 @@ public class GraphUI extends Application {
         });
         MenuItem load = new MenuItem("Load");
         load.setOnAction(actionEvent -> {
+            clear();
             try {
                 File selected_dir = chooser.showOpenDialog(stage);
                 if (algo.load(selected_dir.getAbsolutePath())) {
@@ -90,8 +101,9 @@ public class GraphUI extends Application {
                 algo.load(algo_file);
             }
         });
-        MenuItem restart = new MenuItem("Restart");
-        restart.setOnAction(actionEvent -> {
+        MenuItem reset = new MenuItem("Reset");
+        reset.setOnAction(actionEvent -> {
+            clear();
             algo.load(algo_file);
             try {
                 stop();
@@ -100,11 +112,22 @@ public class GraphUI extends Application {
                 e.printStackTrace();
             }
         });
-        menu_file.getItems().addAll(restart, save, load, exit);
+//        MenuItem clear = new MenuItem("Clear");
+//        clear.setOnAction(actionEvent -> {
+//            algo.init(new DWGraph(new HashMap<>(), new HashMap<>()));
+//            try {
+//                stop();
+//                start(stage);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
+        menu_file.getItems().addAll(reset, save, load, exit);
         Menu menu_edit = new Menu("Edit");
         Menu add = new Menu("Add");
         MenuItem add_node = new MenuItem("Add Node");
         EventHandler<ActionEvent> node_event = actionEvent -> {
+            clear();
             EventsUI.getInputNode().showAndWait();
             try {
                 stop();
@@ -117,6 +140,7 @@ public class GraphUI extends Application {
 
         MenuItem add_edge = new MenuItem("Add Edge");
         EventHandler<ActionEvent> edge_event = actionEvent -> {
+            clear();
             EventsUI.getInputEdge().showAndWait();
             try {
                 stop();
@@ -130,6 +154,7 @@ public class GraphUI extends Application {
         Menu delete = new Menu("Delete");
         MenuItem del_node = new MenuItem("Delete Node");
         EventHandler<ActionEvent> dnode_event = actionEvent -> {
+            clear();
             EventsUI.deleteNode().showAndWait();
             try {
                 stop();
@@ -142,6 +167,7 @@ public class GraphUI extends Application {
 
         MenuItem del_edge = new MenuItem("Delete Edge");
         EventHandler<ActionEvent> del_edge_event = actionEvent -> {
+            clear();
             EventsUI.deleteEdge().showAndWait();
             try {
                 stop();
@@ -160,27 +186,10 @@ public class GraphUI extends Application {
         ChoiceDialog<Object> dialog = new ChoiceDialog<>(new Separator(), choices);
         dialog.setTitle("Run Algorithm");
         dialog.setHeaderText("Select an algorithm");
-//        EventHandler<ActionEvent> event = actionEvent -> {
-//            dialog.showAndWait();
-//            System.out.println(dialog.selectedItemProperty());
-//            if (dialog.getSelectedItem().equals(choices[0])) {
-//                String ans = algo.isConnected() ? "The graph is strongly connected" : "The graph is not strongly connected";
-//                algo_res.setText(ans);
-//            } else if (dialog.getSelectedItem().equals(choices[1])) {
-//                EventsUI.shortestPathDist(algo_res).showAndWait();
-//            } else if (dialog.getSelectedItem().equals(choices[2])) {
-//                EventsUI.shortestPath(algo_res).showAndWait();
-//            } else if (dialog.getSelectedItem().equals(choices[3])) {
-//                NodeData ans = algo.center();
-//                algo_res.setText(String.format("The center is node %d", ans.getKey()));
-//            } else if (dialog.getSelectedItem().equals(choices[4])) {
-//                EventsUI.tsp(algo_res).showAndWait();
-//            }
-//            dialog.setSelectedItem(new Separator());
-//        };
-        b.setOnAction(e -> {
+        b.setOnAction(event -> {
             dialog.getDialogPane().lookupButton(ButtonType.OK).disableProperty().bind(dialog.selectedItemProperty().isNull());
             dialog.showAndWait().ifPresent(choice -> {
+                clear();
                 if (dialog.getSelectedItem().equals(choices[0])) {
                     String ans = algo.isConnected() ? "The graph is strongly connected" : "The graph is not strongly connected";
                     algo_res.setText(ans);
@@ -191,6 +200,13 @@ public class GraphUI extends Application {
                 } else if (dialog.getSelectedItem().equals(choices[3])) {
                     NodeData ans = algo.center();
                     algo_res.setText(String.format("The center is node %d", ans.getKey()));
+                    node_ids.add(ans.getKey());
+//                    try {
+//                        stop();
+//                        start(stage);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
                 } else if (dialog.getSelectedItem().equals(choices[4])) {
                     EventsUI.tsp(algo_res).showAndWait();
                 }
@@ -220,4 +236,8 @@ public class GraphUI extends Application {
         return chooser;
     }
 
+    private static void clear() {
+        node_ids.clear();
+        edge_ids.clear();
+    }
 }

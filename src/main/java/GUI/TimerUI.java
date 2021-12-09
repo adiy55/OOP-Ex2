@@ -1,6 +1,6 @@
 package GUI;
 
-import Graph.*;
+import Graph.Node;
 import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
 import api.NodeData;
@@ -42,7 +42,11 @@ public class TimerUI extends AnimationTimer {
             Circle circle = new Circle();
             circle.setCenterX(point.getX());
             circle.setCenterY(point.getY());
-            circle.setFill(Color.BLACK);
+            if (GraphUI.node_ids.contains(n.getKey())) {
+                circle.setFill(Color.GOLD);
+            } else {
+                circle.setFill(Color.BLACK);
+            }
             circle.setRadius(8);
             Text text = new Text(Integer.toString(n.getKey()));
             text.setFont(Font.font("Ariel", FontWeight.BOLD, 15));
@@ -62,6 +66,7 @@ public class TimerUI extends AnimationTimer {
         Iterator<EdgeData> edge_iter = algo.getGraph().edgeIter(key);
         while (edge_iter.hasNext()) {
             EdgeData e = edge_iter.next();
+            boolean mark = false;
             Point2D dest_point = scaleUI.getAdjustedPoint(algo.getGraph().getNode(e.getDest()));
             Line l = new Line();
             l.setStartX(point.getX());
@@ -69,14 +74,18 @@ public class TimerUI extends AnimationTimer {
             l.setEndX(dest_point.getX());
             l.setEndY(dest_point.getY());
             l.setStrokeWidth(2);
+            if(GraphUI.edge_ids.containsKey(e.getSrc()) && GraphUI.edge_ids.get(key).equals(e.getDest())){
+                l.setStroke(Color.GOLD);
+                mark = true;
+            }
             start();
             this.root.getChildren().add(l);
-            addArrow(point, dest_point);
+            addArrow(point, dest_point, mark);
         }
         stop();
     }
 
-    private void addArrow(Point2D point, Point2D dest_point) {
+    private void addArrow(Point2D point, Point2D dest_point, boolean mark) {
         double dist = point.distance(dest_point);
         double x_left = dest_point.getX() + ((15 / dist) * (((point.getX() - dest_point.getX()) * Math.cos(50) + ((point.getY() - dest_point.getY()) * (Math.sin(50))))));
         double x_right = dest_point.getX() + ((15 / dist) * (((point.getX() - dest_point.getX()) * Math.cos(50) - ((point.getY() - dest_point.getY()) * (Math.sin(50))))));
@@ -94,6 +103,10 @@ public class TimerUI extends AnimationTimer {
         right.setEndX(x_right);
         right.setEndY(y_right);
         right.setStrokeWidth(2);
+        if(mark){
+            left.setStroke(Color.GOLD);
+            right.setStroke(Color.GOLD);
+        }
         start();
         this.root.getChildren().addAll(left, right);
         stop();
