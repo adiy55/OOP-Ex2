@@ -72,11 +72,22 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 //
 //    }
 
+    /**
+     * Idea for implementation of algorithm taken from:
+     * https://www.youtube.com/watch?v=pVfj6mxhdMw
+     * and from
+     * https://www.youtube.com/watch?v=XB4MIexjvY0
+     * and from
+     * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+     * <p>
+     * Function to calculate the shortest distances between the src an all other nodes. returns a hashmap containing
+     * keys of nodes, their minimal distance from src node, and the previous node they visited on their way from
+     * the src node
+     *
+     * @param src
+     * @return
+     */
     public HashMap<Integer, double[]> DijkstrasAlgo(NodeData src) {
-        /*
-        Idea for implementation of algorithm taken from:
-        https://www.youtube.com/watch?v=pVfj6mxhdMw
-         */
         HashMap<Integer, double[]> map = new HashMap<>();
         //ret[0] == distances
         //ret[1] == previous Node (key of node) visited (to calculate path)
@@ -106,23 +117,31 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                         map.put(neighEdge.getDest(), new double[]{weightToCompare, neighEdge.getSrc()});
                     }
                 }
-           }
+            }
             visited.add(currNode.getKey());
             unvisited.remove(currNode.getKey());
 
-            currNode = this.graph.getNode(smallestNeigh(visited, map)); //unvisited vertex with smallest known distance from
+            currNode = this.graph.getNode(smallestNeigh(unvisited, visited, map)); //unvisited vertex with smallest known distance from
             // current vertex
             currVal = map.get(currNode.getKey())[0];
         }
         return map;
     }
 
-    private int smallestNeigh(HashSet<Integer> visited, HashMap<Integer, double[]> map) {
+    /**
+     * Function to return the key of the unvisited node with the smallest value.
+     *
+     * @param unvisited hashset of unvisited nodes
+     * @param visited   hashset of visited nodes
+     * @param map       map of values
+     * @return double
+     */
+    private int smallestNeigh(HashSet<Integer> unvisited, HashSet<Integer> visited, HashMap<Integer, double[]> map) {
         double minVal = Double.MAX_VALUE;
         int minKey = 0;
-        Iterator<NodeData> itrNeigh = this.graph.nodeIter();
-        while (itrNeigh.hasNext()) {
-            NodeData currNode = itrNeigh.next();
+//        Iterator<NodeData> itrNeigh = this.graph.nodeIter();
+        for (Integer i : unvisited) {
+            NodeData currNode = this.graph.getNode(i);
             if (!visited.contains(currNode.getKey())) {
                 if (minVal >= map.get(currNode.getKey())[0]) {
                     minVal = map.get(currNode.getKey())[0];
@@ -161,7 +180,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         double minMaxValue = Double.MAX_VALUE;
 
         Iterator<NodeData> itr = graph.nodeIter();
-        while(itr.hasNext()) {
+        while (itr.hasNext()) {
             NodeData currNode = itr.next();
             HashMap<Integer, double[]> map = this.DijkstrasAlgo(currNode);
             double currMaxVal = 0;
@@ -177,49 +196,6 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         }
         return this.graph.getNode(minMaxKey);
     }
-
-
-
-
-//    @Override
-//    public NodeData center() {
-//        int[] maxKeys = new int[graph.nodeSize()];
-//        double[] maxValues = new double[graph.nodeSize()];
-//
-//        int minMaxKey = Integer.MAX_VALUE;
-//        double minMaxValue = Double.MAX_VALUE;
-//
-//        Iterator<NodeData> itr = graph.nodeIter();
-//        int ind = 0;
-//        while(itr.hasNext()) {
-//            NodeData currNode = itr.next();
-//            maxKeys[ind] = currNode.getKey(); //add the key of the node to the array of keys
-//            HashMap<Integer, double[]> map = this.DijkstrasAlgo(currNode);
-//            double currMaxVal = 0;
-//            for (Map.Entry<Integer, double[]> entry : map.entrySet()) {
-//                if (currMaxVal < entry.getValue()[0]) {
-//                    currMaxVal = entry.getValue()[0];
-//                }
-//            }
-//            maxValues[ind] = currMaxVal;
-//            ind++;
-//            if (minMaxValue < currMaxVal) {
-//                minMaxKey = currNode.getKey();
-//                minMaxValue = currMaxVal;
-//            }
-//        }
-//
-//        double minValueInArr = Double.MAX_VALUE;
-//        int minValIndex = 0;
-//        for (int i = 0; i < maxValues.length; i++) { //checking for min value out of all maxValues array.
-//            // Saving its corresponding key from the keys array
-//            if (maxValues[i] < minValueInArr) {
-//                minValueInArr = maxValues[i];
-//                minValIndex = i;
-//            }
-//        }
-//        return this.graph.getNode(maxKeys[minValIndex]);
-//    }
 
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
@@ -245,7 +221,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                 }
             }
             currNode = nextNode;
-            for (NodeData node: path) {
+            for (NodeData node : path) {
                 if (node != path.get(0)) {
                     ret.addLast(node);
                     visitedCities.add(node);

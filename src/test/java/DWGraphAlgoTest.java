@@ -129,14 +129,10 @@ class DWGraphAlgoTest {
 
     @Test
     void save() { //TODO
-        DWGraphAlgo test = new DWGraphAlgo("data/G1.json");
-        test.save("data/test1G1.json");
-        DWGraphAlgo test1 = new DWGraphAlgo("data/test1G1.json");
+//        DWGraphAlgo test = new DWGraphAlgo("data/G1.json");
+//        test.save("data/test1G1.json");
+//        DWGraphAlgo test1 = new DWGraphAlgo("data/test1G1.json");
 
-    }
-
-    @Test
-    void load() {
     }
 
     @Test
