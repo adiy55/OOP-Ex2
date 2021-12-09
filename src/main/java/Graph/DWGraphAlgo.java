@@ -1,3 +1,5 @@
+package Graph;
+
 import api.DirectedWeightedGraph;
 import api.EdgeData;
 import api.NodeData;
@@ -16,13 +18,27 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
     public DWGraphAlgo(String filename) {
         this.filename = filename;
-        boolean flag = load(filename);
-        if (!flag) this.graph = null;
+        load(filename);
     }
 
     @Override
-    public void init(DirectedWeightedGraph g) { // todo: can we assume that this is a DWGraph ??????
-        graph = (DWGraph) g;
+    public void init(DirectedWeightedGraph g) {
+        Iterator<NodeData> node_iter = g.nodeIter();
+        Iterator<EdgeData> edge_iter = g.edgeIter();
+        HashMap<Integer, NodeData> nodes = new HashMap<>();
+        HashMap<Integer, HashMap<Integer, EdgeData>> edges = new HashMap<>();
+        while (node_iter.hasNext()) {
+            NodeData n = node_iter.next();
+            nodes.put(n.getKey(), new Node(n.getKey(), new GeoLoc(n.getLocation().x(), n.getLocation().y(), n.getLocation().z())));
+            edges.put(n.getKey(), new HashMap<>());
+        }
+        while (edge_iter.hasNext()) {
+            EdgeData e = edge_iter.next();
+            edges.get(e.getSrc()).put(e.getDest(), new Edge(e.getSrc(), e.getWeight(), e.getDest()));
+            Node n = (Node) nodes.get(e.getDest());
+            n.addNeighbor(e.getSrc());
+        }
+        graph = new DWGraph(nodes, edges);
     }
 
     @Override
@@ -36,38 +52,67 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
     }
 
     @Override
-    public boolean isConnected() {
-        return false;
+    public boolean isConnected() { // iterative DFS
+        int start_id = -1;
+        for (int i = 0; i < graph.getNodes().values().size(); i++) {
+            if (i == 0) {
+                start_id = graph.getNodes().get(i).getKey();
+            }
+            Node curr_node = (Node) graph.getNodes().get(i);
+            curr_node.setC(Node.Color.WHITE);
+        }
+        return DFS(this.graph, start_id) && DFS(transposeEdges(), start_id);
     }
 
-    //    private boolean DFS() {
-//        HashMap<Integer, NodeData> nodes = graph.getNodes();
-//        HashMap<Integer, HashMap<Integer, EdgeData>> edges = graph.getEdges();
-//        Stack<Node> stack = new Stack<>();
-//        for (NodeData n: graph.getEdges().) {
-//            Node curr_node = (Node) n;
-//            curr_node.setC(Node.Color.WHITE);
-//        }
-//        for (NodeData n: nodes.values()) {
-//            Node curr_node = (Node) n;
-//            if(curr_node.getC().equals(Node.Color.WHITE)){
-//
-//            }
-//        }
-//
-//    }
-//
-//    private void DFSVisit(Stack<Node> s){
-//        Node n = s.pop();
-//        n.setC(Node.Color.GRAY);
-//        for (EdgeData e : graph.getEdges().get(n.getKey()).values()) {
-//
-//
-//        }
-//
-//    }
+    private boolean DFS(DWGraph graph, int start_id) {
+        if (start_id == -1) return false;
+        Node start_node = (Node) graph.getNode(start_id);
+        Stack<NodeData> stack = new Stack<>();
+        stack.push(start_node);
+        DFSVisit(stack, graph);
+        for (NodeData n : graph.getNodes().values()) {
+            Node curr_node = (Node) n;
+            if (curr_node.getC().equals(Node.Color.WHITE)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
+    private void DFSVisit(Stack<NodeData> stack, DWGraph graph) {
+        while (!stack.isEmpty()) {
+            Node n = (Node) stack.pop();
+            n.setC(Node.Color.GRAY);
+            for (Integer dest : graph.getEdges().get(n.getKey()).keySet()) {
+                Node dest_node = (Node) graph.getNode(dest);
+                if (dest_node.getC().equals(Node.Color.WHITE)) {
+                    stack.push(dest_node);
+                }
+            }
+            n.setC(Node.Color.BLACK);
+        }
+    }
 
+    public DWGraph transposeEdges() {
+        HashMap<Integer, NodeData> nodes = new HashMap<>();
+        HashMap<Integer, HashMap<Integer, EdgeData>> edges = new HashMap<>();
+        for (NodeData n : graph.getNodes().values()) {
+            Node new_node = new Node(n.getKey(), new GeoLoc(n.getLocation().x(), n.getLocation().y(), n.getLocation().z()));
+            new_node.setC(Node.Color.WHITE);
+            nodes.put(new_node.getKey(), new_node);
+            edges.put(new_node.getKey(), new HashMap<>());
+        }
+        for (Integer src : graph.getEdges().keySet()) {
+            for (Integer dest : graph.getEdges().get(src).keySet()) {
+                Edge curr_edge = (Edge) graph.getEdges().get(src).get(dest);
+                Edge new_edge = new Edge(curr_edge.getDest(), curr_edge.getWeight(), curr_edge.getSrc());
+                edges.get(new_edge.getSrc()).put(new_edge.getDest(), new_edge);
+                Node n = (Node) nodes.get(new_edge.getDest());
+                n.addNeighbor(new_edge.getSrc());
+            }
+        }
+        return new DWGraph(nodes, edges);
+    }
 
     private class PriorityQueueComparator implements Comparator<Integer> {
         private HashMap<Integer, double[]> map;
@@ -103,11 +148,11 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
     private HashMap<Integer, double[]> DijkstrasAlgo(NodeData src) {
         HashMap<Integer, double[]> map = new HashMap<>();
         //ret[0] == distances
-        //ret[1] == previous Node (key of node) visited (to calculate path)
+        //ret[1] == previous Graph.Node (key of node) visited (to calculate path)
         HashSet<Integer> visited = new HashSet<>();
         HashSet<Integer> unvisited = new HashSet<>();
         //ArrayList<Integer> unvisited = new ArrayList<>();
-        map.put(src.getKey(), new double[]{0, 0.5}); //0.5 is some invalid key of Node (should be integer)
+        map.put(src.getKey(), new double[]{0, 0.5}); //0.5 is some invalid key of Graph.Node (should be integer)
         unvisited.add(src.getKey());
         Iterator<NodeData> itr = this.graph.nodeIter();
         while (itr.hasNext()) { //initialization of distances to "infinity" except the src node,
@@ -253,16 +298,16 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         JSONArray edges = new JSONArray();
 
         Iterator<NodeData> itrN = this.graph.nodeIter();
-        while(itrN.hasNext()) {
+        while (itrN.hasNext()) {
             NodeData currNode = itrN.next();
             JSONObject obj = new JSONObject();
-            obj.put("pos", currNode.getLocation().x()+","+ currNode.getLocation().y()+","+currNode.getLocation().z());
+            obj.put("pos", currNode.getLocation().x() + "," + currNode.getLocation().y() + "," + currNode.getLocation().z());
             obj.put("id", currNode.getKey());
             nodes.put(obj);
         }
 
         Iterator<EdgeData> itrE = this.graph.edgeIter();
-        while(itrE.hasNext()) {
+        while (itrE.hasNext()) {
             EdgeData currEdge = itrE.next();
             JSONObject obj = new JSONObject();
             obj.put("src", currEdge.getSrc()).put("w", currEdge.getWeight()).put("dest", currEdge.getDest());
@@ -305,7 +350,8 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
             return true; //Successfully loaded
         } catch (IOException e) {
             e.printStackTrace();
-            return false; //loading unsuccessful
+            this.graph = null;
+            return false; // loading unsuccessful
         }
     }
 }

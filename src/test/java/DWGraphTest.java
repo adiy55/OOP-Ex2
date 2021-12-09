@@ -1,3 +1,7 @@
+import Graph.DWGraph;
+import Graph.DWGraphAlgo;
+import Graph.GeoLoc;
+import Graph.Node;
 import api.EdgeData;
 import api.NodeData;
 import org.junit.jupiter.api.Test;

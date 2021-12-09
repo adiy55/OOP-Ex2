@@ -1,8 +1,8 @@
+import Graph.GeoLoc;
+import Graph.Node;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,7 +44,7 @@ class NodeTest {
     void getInfo() {
         Node n1 = new Node(21, new GeoLoc(35.1, 32.2, 0));
         n1.setInfo("blah blah");
-        assertTrue("blah blah".equals(n1.getInfo()));
+        assertEquals("blah blah", n1.getInfo());
     }
 
     @Test
@@ -73,6 +73,6 @@ class NodeTest {
     @Test
     void testToString() {
         Node n1 = new Node(21, new GeoLoc(35.1, 32.2, 0));
-        assertEquals("Node{id=21, location=GeoLoc{x=35.1, y=32.2, z=0.0}}", n1.toString());
+        assertEquals("Graph.Node{id=21, location=Graph.GeoLoc{x=35.1, y=32.2, z=0.0}}", n1.toString());
     }
 }

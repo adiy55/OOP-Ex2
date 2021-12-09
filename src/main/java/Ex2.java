@@ -1,5 +1,8 @@
+import GUI.GraphUI;
+import Graph.DWGraphAlgo;
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
+import javafx.application.Application;
 
 /**
  * This class is the main class for Ex2 - your implementation will be tested using this class.
@@ -34,8 +37,15 @@ public class Ex2 {
      */
     public static void runGUI(String json_file) {
         DirectedWeightedGraphAlgorithms alg = getGrapgAlgo(json_file);
+        GraphUI.algo = alg;
+        GUI.GraphUI.algo_file = json_file;
         // ****** Add your code here ******
         //
         // ********************************
+    }
+
+    public static void main(String[] args) {
+        runGUI("data/G1.json");
+        Application.launch(GraphUI.class, args);
     }
 }

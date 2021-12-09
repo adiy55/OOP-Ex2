@@ -1,3 +1,6 @@
+package GUI;
+
+import Graph.*;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -5,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 
 // animation timer
 // todo: action to insert new path
@@ -15,7 +17,7 @@ public class EventsUI {
     public static Stage getInputNode() {
 
         Stage stage = new Stage();
-        stage.setTitle("Add Node");
+        stage.setTitle("Add Graph.Node");
 
         Label id = new Label("Insert ID:");
         Label loc_x = new Label("Insert X coordinate:");
@@ -37,7 +39,7 @@ public class EventsUI {
                     GeoLoc gl = new GeoLoc(Double.parseDouble(text2.getText()), Double.parseDouble(text3.getText()), Double.parseDouble(text4.getText()));
                     Node n = new Node(Integer.parseInt(text1.getText()), gl);
                     GraphUI.algo.getGraph().addNode(n);
-                    l.setText(String.format("Node %d was added", n.getKey()));
+                    l.setText(String.format("Graph.Node %d was added", n.getKey()));
                     System.out.println(GraphUI.algo.getGraph().nodeSize());
                 }
         );
@@ -54,7 +56,7 @@ public class EventsUI {
     public static Stage getInputEdge() {
 
         Stage stage = new Stage();
-        stage.setTitle("Add Edge");
+        stage.setTitle("Add Graph.Edge");
 
         Label src = new Label("Insert source node:");
         Label dest = new Label("Insert destination node:");
@@ -71,7 +73,7 @@ public class EventsUI {
                     text2.getText();
                     text3.getText();
                     GraphUI.algo.getGraph().connect(Integer.parseInt(text1.getText()), Integer.parseInt(text2.getText()), Double.parseDouble(text3.getText()));
-                    l.setText(String.format("Edge (%s,%s) was added", text1.getText(), text2.getText()));
+                    l.setText(String.format("Graph.Edge (%s,%s) was added", text1.getText(), text2.getText()));
                 }
         );
         VBox layout = new VBox(5);
@@ -86,9 +88,9 @@ public class EventsUI {
     public static Stage deleteNode() {
 
         Stage stage = new Stage();
-        stage.setTitle("Remove Node");
+        stage.setTitle("Remove Graph.Node");
 
-        Label id = new Label("Insert Node ID:");
+        Label id = new Label("Insert Graph.Node ID:");
         Label l = new Label();
 
         Button button = new Button("Submit");
@@ -97,7 +99,7 @@ public class EventsUI {
                 {
                     text1.getText();
                     GraphUI.algo.getGraph().removeNode(Integer.parseInt(text1.getText()));
-                    l.setText(String.format("Node %s was removed", text1.getText()));
+                    l.setText(String.format("Graph.Node %s was removed", text1.getText()));
                 }
         );
 
@@ -113,10 +115,10 @@ public class EventsUI {
     public static Stage deleteEdge() {
 
         Stage stage = new Stage();
-        stage.setTitle("Remove Edge");
+        stage.setTitle("Remove Graph.Edge");
 
-        Label src = new Label("Insert Edge src:");
-        Label dest = new Label("Insert Edge dest:");
+        Label src = new Label("Insert Graph.Edge src:");
+        Label dest = new Label("Insert Graph.Edge dest:");
 
         Label l = new Label();
 
@@ -128,7 +130,7 @@ public class EventsUI {
                     text1.getText();
                     text2.getText();
                     GraphUI.algo.getGraph().removeEdge(Integer.parseInt(text1.getText()), Integer.parseInt(text2.getText()));
-                    l.setText(String.format("Edge (%s,%s) was removed", text1.getText(), text2.getText()));
+                    l.setText(String.format("Graph.Edge (%s,%s) was removed", text1.getText(), text2.getText()));
                 }
         );
 

@@ -1,3 +1,5 @@
+package Graph;
+
 import api.GeoLocation;
 import com.google.gson.*;
 
@@ -122,7 +124,7 @@ public class Node implements api.NodeData {
 
     @Override
     public String toString() {
-        return "Node{" +
+        return "Graph.Node{" +
                 "id=" + id +
                 ", location=" + location +
                 '}';

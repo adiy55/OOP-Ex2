@@ -1,3 +1,5 @@
+package GUI;
+
 import api.DirectedWeightedGraphAlgorithms;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -15,8 +17,8 @@ import javafx.stage.Stage;
 public class GraphUI extends Application {
     final static int width = 600;
     final static int height = 600;
-    static DirectedWeightedGraphAlgorithms algo;
-    static String algo_file;
+    public static DirectedWeightedGraphAlgorithms algo;
+    public static String algo_file;
     private Pane pane;
     private VBox vbox;
 
@@ -55,7 +57,7 @@ public class GraphUI extends Application {
         menu_file.getItems().addAll(reload, save, load, exit);
         Menu menu_edit = new Menu("Edit");
         Menu add = new Menu("Add");
-        MenuItem add_node = new MenuItem("Add Node");
+        MenuItem add_node = new MenuItem("Add Graph.Node");
         EventHandler<ActionEvent> node_event = actionEvent -> {
             EventsUI.getInputNode().showAndWait();
             try {
@@ -66,7 +68,7 @@ public class GraphUI extends Application {
             }
         };
         add_node.setOnAction(node_event);
-        MenuItem add_edge = new MenuItem("Add Edge");
+        MenuItem add_edge = new MenuItem("Add Graph.Edge");
         EventHandler<ActionEvent> edge_event = actionEvent -> {
             EventsUI.getInputEdge().showAndWait();
             try {
@@ -78,10 +80,10 @@ public class GraphUI extends Application {
         };
         add_edge.setOnAction(edge_event);
         Menu delete = new Menu("Delete");
-        MenuItem del_node = new MenuItem("Delete Node");
+        MenuItem del_node = new MenuItem("Delete Graph.Node");
         EventHandler<ActionEvent> dnode_event = actionEvent -> EventsUI.deleteNode().show();
         del_node.setOnAction(dnode_event);
-        MenuItem del_edge = new MenuItem("Delete Edge");
+        MenuItem del_edge = new MenuItem("Delete Graph.Edge");
         EventHandler<ActionEvent> dedge_event = actionEvent -> EventsUI.deleteEdge().show();
         del_edge.setOnAction(dedge_event);
         delete.getItems().addAll(del_node, del_edge);

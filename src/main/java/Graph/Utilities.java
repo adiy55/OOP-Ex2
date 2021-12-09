@@ -1,3 +1,5 @@
+package Graph;
+
 import api.EdgeData;
 import api.NodeData;
 
@@ -33,10 +35,6 @@ public class Utilities {
     }
 
     public static HashSet<Integer> copyNeighbours(HashSet<Integer> old) {
-        HashSet<Integer> ret = new HashSet<>();
-        for (Integer curr : old) {
-            ret.add(curr);
-        }
-        return ret;
+        return new HashSet<>(old);
     }
 }

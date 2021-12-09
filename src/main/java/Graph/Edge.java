@@ -1,7 +1,4 @@
-import com.google.gson.*;
-
-import java.lang.reflect.Type;
-import java.security.spec.ECGenParameterSpec;
+package Graph;
 
 public class Edge implements api.EdgeData {
     private int src;
@@ -31,8 +28,7 @@ public class Edge implements api.EdgeData {
         if (e.dest != this.dest) return false;
         if (e.w != this.w) return false;
         if (!e.info.equals(this.info)) return false;
-        if (e.tag != this.tag) return false;
-        return true;
+        return e.tag == this.tag;
     }
 
     @Override
@@ -72,7 +68,7 @@ public class Edge implements api.EdgeData {
 
     @Override
     public String toString() {
-        return "Edge{" +
+        return "Graph.Edge{" +
                 "src=" + src +
                 ", dest=" + dest +
                 ", weight=" + w +

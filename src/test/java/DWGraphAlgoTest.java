@@ -1,8 +1,8 @@
-import api.DirectedWeightedGraph;
+import Graph.DWGraph;
+import Graph.DWGraphAlgo;
 import api.NodeData;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,7 +30,7 @@ class DWGraphAlgoTest {
         assertTrue(test1.isConnected());
         test1.getGraph().removeNode(8);
         test1.getGraph().removeNode(14);
-        assertTrue(!test1.isConnected());
+        assertFalse(test1.isConnected());
 
         test1 = new DWGraphAlgo("data/G2.json");
         assertTrue(test1.isConnected());
@@ -70,7 +70,7 @@ class DWGraphAlgoTest {
         assertEquals(3, lst.size());
 
         lst = test1.shortestPath(4, 0);
-        assertEquals(null, lst);
+        assertNull(lst);
 
         lst = test1.shortestPath(0, 4);
         assertEquals(0, lst.get(0).getKey());
@@ -122,13 +122,13 @@ class DWGraphAlgoTest {
     @Test
     void tsp() {
         DWGraphAlgo test = new DWGraphAlgo("data/Test2.json");
-        List<NodeData> lstTest = new LinkedList<NodeData>();
+        List<NodeData> lstTest = new LinkedList<>();
         lstTest.add(test.getGraph().getNode(4));
         lstTest.add(test.getGraph().getNode(2));
         System.out.println(test.tsp(lstTest));
 
         test = new DWGraphAlgo("data/G1.json");
-        lstTest = new LinkedList<NodeData>();
+        lstTest = new LinkedList<>();
         lstTest.add(test.getGraph().getNode(2));
         lstTest.add(test.getGraph().getNode(5));
         lstTest.add(test.getGraph().getNode(9));
