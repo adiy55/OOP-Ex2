@@ -1,5 +1,4 @@
 import api.DirectedWeightedGraph;
-import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
 import api.NodeData;
 import com.google.gson.Gson;
@@ -20,10 +19,6 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         boolean flag = load(filename);
         if (!flag) this.graph = null;
     }
-
-//    public DWGraphAlgo(String file) {
-//        filename = file;
-//    }
 
     @Override
     public void init(DirectedWeightedGraph g) { // todo: can we assume that this is a DWGraph ??????
@@ -105,7 +100,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
      * @param src
      * @return
      */
-    public HashMap<Integer, double[]> DijkstrasAlgo(NodeData src) {
+    private HashMap<Integer, double[]> DijkstrasAlgo(NodeData src) {
         HashMap<Integer, double[]> map = new HashMap<>();
         //ret[0] == distances
         //ret[1] == previous Node (key of node) visited (to calculate path)
@@ -245,9 +240,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                 if (node != path.get(0)) {
                     ret.addLast(node);
                     visitedCities.add(node);
-                    if (cities.contains(node)) {
-                        cities.remove(node);
-                    }
+                    cities.remove(node); //if exists
                 }
             }
         }
@@ -256,17 +249,37 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
     @Override
     public boolean save(String file) {
+        JSONArray nodes = new JSONArray();
+        JSONArray edges = new JSONArray();
+
+        Iterator<NodeData> itrN = this.graph.nodeIter();
+        while(itrN.hasNext()) {
+            NodeData currNode = itrN.next();
+            JSONObject obj = new JSONObject();
+            obj.put("pos", currNode.getLocation().x()+","+ currNode.getLocation().y()+","+currNode.getLocation().z());
+            obj.put("id", currNode.getKey());
+            nodes.put(obj);
+        }
+
+        Iterator<EdgeData> itrE = this.graph.edgeIter();
+        while(itrE.hasNext()) {
+            EdgeData currEdge = itrE.next();
+            JSONObject obj = new JSONObject();
+            obj.put("src", currEdge.getSrc()).put("w", currEdge.getWeight()).put("dest", currEdge.getDest());
+            edges.put(obj);
+        }
+
+        JSONObject graph = new JSONObject().put("Edges", edges).put("Nodes", nodes);
+
         try {
-            String str = new Gson().toJson(this.graph);
             FileWriter fw = new FileWriter(file);
-            fw.write(str + "\n");
+            fw.write(graph + "");
             fw.close();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-
     }
 
     @Override

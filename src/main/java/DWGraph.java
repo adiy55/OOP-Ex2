@@ -232,6 +232,7 @@ public class DWGraph implements api.DirectedWeightedGraph {
                 '}';
     }
 
+
     public HashMap<Integer, NodeData> getNodes() {
         return nodes;
     }

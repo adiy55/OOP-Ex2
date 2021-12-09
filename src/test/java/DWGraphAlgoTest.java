@@ -25,7 +25,18 @@ class DWGraphAlgoTest {
     }
 
     @Test
-    void isConnected() {//TODO
+    void isConnected() {
+        DWGraphAlgo test1 = new DWGraphAlgo("data/G1.json");
+        assertTrue(test1.isConnected());
+        test1.getGraph().removeNode(8);
+        test1.getGraph().removeNode(14);
+        assertTrue(!test1.isConnected());
+
+        test1 = new DWGraphAlgo("data/G2.json");
+        assertTrue(test1.isConnected());
+
+        test1 = new DWGraphAlgo("data/G3.json");
+        assertTrue(test1.isConnected());
     }
 
     @Test
@@ -129,22 +140,16 @@ class DWGraphAlgoTest {
 
     @Test
     void save() { //TODO
-        DWGraphAlgo test1 = new DWGraphAlgo("data/G1.json");
-        List<NodeData> lst = test1.shortestPath(2, 9);
-        for (int i = 0; i < lst.size(); i++) {
-            System.out.println(lst.get(i).getKey());
-        }
-
-    }
-
-    @Test
-    void DijkstrasAlgo() {
         DWGraphAlgo test1 = new DWGraphAlgo("data/Test1.json");
-        HashMap<Integer, double[]> temp = test1.DijkstrasAlgo(test1.getGraph().getNode(0));
-        assertArrayEquals(temp.get(0), new double[] {0.0, 0.5}, EPS);
-        assertArrayEquals(temp.get(1), new double[] {1.0, 0.0}, EPS);
-        assertArrayEquals(temp.get(2), new double[] {3.0, 1.0}, EPS);
-        assertArrayEquals(temp.get(3), new double[] {2.0, 1.0}, EPS);
-        assertArrayEquals(temp.get(4), new double[] {7.0, 3.0}, EPS);
+        test1.save("data/testOutput.json");
+        DWGraphAlgo test2 = new DWGraphAlgo("data/testOutput.json");
+        assertEquals(test1.getGraph().getNode(0).getWeight(), test2.getGraph().getNode(0).getWeight());
+        assertEquals(test1.getGraph().getNode(2).getWeight(), test2.getGraph().getNode(2).getWeight());
+
+        test1 = new DWGraphAlgo("data/G1.json");
+        test1.save("data/testOutput.json");
+        test2 = new DWGraphAlgo("data/testOutput.json");
+        assertEquals(test1.getGraph().getEdge(0, 1).getWeight(), test2.getGraph().getEdge(0, 1).getWeight());
+        assertEquals(test1.getGraph().getNode(1).getLocation().x(), test2.getGraph().getNode(1).getLocation().x());
     }
 }
