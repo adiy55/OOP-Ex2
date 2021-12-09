@@ -1,9 +1,9 @@
 package GUI;
 
 import api.DirectedWeightedGraphAlgorithms;
+import api.NodeData;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -11,14 +11,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
-// todo: fix margins, update graph after adding a node
+import java.io.File;
+import java.util.Optional;
+
 public class GraphUI extends Application {
     final static int width = 600;
     final static int height = 600;
     public static DirectedWeightedGraphAlgorithms algo;
     public static String algo_file;
+    public static FileChooser chooser = initFileChooser();
     private Pane pane;
     private VBox vbox;
 
@@ -30,7 +35,14 @@ public class GraphUI extends Application {
     private void initGUI(Stage stage) {
         stage.setResizable(true);
         stage.setTitle("Directed Weighted Graph UI");
+        stage.setOnCloseRequest(windowEvent -> {
+            Alert close_event = EventsUI.confirmCloseEvent();
+            Optional<ButtonType> response = close_event.showAndWait();
+            if (response.isPresent() && !ButtonType.OK.equals(response.get())) {
+                windowEvent.consume();
+            }
 
+        });
         pane = new Pane();
         vbox = new VBox();
         vbox.setSpacing(10);
@@ -38,14 +50,43 @@ public class GraphUI extends Application {
         MenuBar menu_bar = new MenuBar();
         ToolBar toolbar = new ToolBar();
         Label algo_res = new Label();
+        algo_res.setWrapText(true);
 
         Menu menu_file = new Menu("File");
         MenuItem exit = new MenuItem("Exit");
-        exit.setOnAction((ActionEvent event) -> Platform.exit());
+        exit.setOnAction(event -> stage.fireEvent(
+                new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST)));
         MenuItem save = new MenuItem("Save");
+        save.setOnAction(actionEvent -> {
+            try {
+                File selected_dir = chooser.showSaveDialog(stage);
+                if (algo.save(selected_dir.getAbsolutePath())) {
+                    chooser.setInitialDirectory(selected_dir.getParentFile());
+                    stop();
+                    start(stage);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                algo.load(algo_file);
+            }
+        });
         MenuItem load = new MenuItem("Load");
-        MenuItem reload = new MenuItem("Reload Graph");
-        reload.setOnAction(actionEvent -> {
+        load.setOnAction(actionEvent -> {
+            try {
+                File selected_dir = chooser.showOpenDialog(stage);
+                if (algo.load(selected_dir.getAbsolutePath())) {
+                    chooser.setInitialDirectory(selected_dir.getParentFile());
+                    algo_file = selected_dir.getAbsolutePath();
+                    stop();
+                    start(stage);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                algo.load(algo_file);
+            }
+        });
+        MenuItem restart = new MenuItem("Restart");
+        restart.setOnAction(actionEvent -> {
             algo.load(algo_file);
             try {
                 stop();
@@ -54,10 +95,10 @@ public class GraphUI extends Application {
                 e.printStackTrace();
             }
         });
-        menu_file.getItems().addAll(reload, save, load, exit);
+        menu_file.getItems().addAll(restart, save, load, exit);
         Menu menu_edit = new Menu("Edit");
         Menu add = new Menu("Add");
-        MenuItem add_node = new MenuItem("Add Graph.Node");
+        MenuItem add_node = new MenuItem("Add Node");
         EventHandler<ActionEvent> node_event = actionEvent -> {
             EventsUI.getInputNode().showAndWait();
             try {
@@ -68,7 +109,7 @@ public class GraphUI extends Application {
             }
         };
         add_node.setOnAction(node_event);
-        MenuItem add_edge = new MenuItem("Add Graph.Edge");
+        MenuItem add_edge = new MenuItem("Add Edge");
         EventHandler<ActionEvent> edge_event = actionEvent -> {
             EventsUI.getInputEdge().showAndWait();
             try {
@@ -80,12 +121,28 @@ public class GraphUI extends Application {
         };
         add_edge.setOnAction(edge_event);
         Menu delete = new Menu("Delete");
-        MenuItem del_node = new MenuItem("Delete Graph.Node");
-        EventHandler<ActionEvent> dnode_event = actionEvent -> EventsUI.deleteNode().show();
+        MenuItem del_node = new MenuItem("Delete Node");
+        EventHandler<ActionEvent> dnode_event = actionEvent -> {
+            EventsUI.deleteNode().showAndWait();
+            try {
+                stop();
+                start(stage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
         del_node.setOnAction(dnode_event);
-        MenuItem del_edge = new MenuItem("Delete Graph.Edge");
-        EventHandler<ActionEvent> dedge_event = actionEvent -> EventsUI.deleteEdge().show();
-        del_edge.setOnAction(dedge_event);
+        MenuItem del_edge = new MenuItem("Delete Edge");
+        EventHandler<ActionEvent> del_edge_event = actionEvent -> {
+            EventsUI.deleteEdge().showAndWait();
+            try {
+                stop();
+                start(stage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+        del_edge.setOnAction(del_edge_event);
         delete.getItems().addAll(del_node, del_edge);
         add.getItems().addAll(add_node, add_edge);
         menu_edit.getItems().addAll(add, delete);
@@ -94,15 +151,25 @@ public class GraphUI extends Application {
         String[] choices = {"isConnected", "shortestPathDist", "shortestPath", "center", "tsp"};
         ChoiceDialog<Object> dialog = new ChoiceDialog<>(new Separator(), choices);
         dialog.setTitle("Run Algorithm");
+        dialog.setHeaderText("Select an algorithm");
         EventHandler<ActionEvent> event = actionEvent -> {
             dialog.showAndWait();
             if (dialog.getSelectedItem().equals(choices[0])) {
                 String ans = algo.isConnected() ? "The graph is strongly connected" : "The graph is not strongly connected";
                 algo_res.setText(ans);
-            } // todo: finish cases
-            else {
+            } else if (dialog.getSelectedItem().equals(choices[1])) {
+                EventsUI.shortestPathDist(algo_res).showAndWait();
+            } else if (dialog.getSelectedItem().equals(choices[2])) {
+                EventsUI.shortestPath(algo_res).showAndWait();
+            } else if (dialog.getSelectedItem().equals(choices[3])) {
+                NodeData ans = algo.center();
+                algo_res.setText(String.format("The center is node %d", ans.getKey()));
+            } else if (dialog.getSelectedItem().equals(choices[4])) {
+                EventsUI.tsp(algo_res).showAndWait();
+            } else {
                 algo_res.setText("");
             }
+            dialog.setSelectedItem("");
         };
         b.setOnAction(event);
 
@@ -110,7 +177,9 @@ public class GraphUI extends Application {
         timerUI.start();
 
         menu_bar.getMenus().addAll(menu_file, menu_edit);
-        toolbar.getItems().addAll(menu_bar, b, new Label("Algorithm Output:"), algo_res);
+        Label alg_out = new Label("Algorithm Output:");
+        alg_out.setWrapText(true);
+        toolbar.getItems().addAll(menu_bar, b, alg_out, algo_res);
         vbox.getChildren().addAll(toolbar, pane);
         Scene scene = new Scene(vbox, height + 30, width + 60);
         stage.setScene(scene);
@@ -118,5 +187,13 @@ public class GraphUI extends Application {
 
     }
 
+    private static FileChooser initFileChooser() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("File Explorer");
+        File default_dir = new File("c:/");
+        chooser.setInitialDirectory(default_dir);
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+        return chooser;
+    }
 
 }
