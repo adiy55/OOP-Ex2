@@ -4,7 +4,11 @@ import api.DirectedWeightedGraphAlgorithms;
 import api.NodeData;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -15,6 +19,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import javax.swing.*;
 import java.io.File;
 import java.util.Optional;
 
@@ -33,7 +38,7 @@ public class GraphUI extends Application {
     }
 
     private void initGUI(Stage stage) {
-        stage.setResizable(true);
+        stage.setResizable(false);
         stage.setTitle("Directed Weighted Graph UI");
         stage.setOnCloseRequest(windowEvent -> {
             Alert close_event = EventsUI.confirmCloseEvent();
@@ -109,6 +114,7 @@ public class GraphUI extends Application {
             }
         };
         add_node.setOnAction(node_event);
+
         MenuItem add_edge = new MenuItem("Add Edge");
         EventHandler<ActionEvent> edge_event = actionEvent -> {
             EventsUI.getInputEdge().showAndWait();
@@ -120,6 +126,7 @@ public class GraphUI extends Application {
             }
         };
         add_edge.setOnAction(edge_event);
+
         Menu delete = new Menu("Delete");
         MenuItem del_node = new MenuItem("Delete Node");
         EventHandler<ActionEvent> dnode_event = actionEvent -> {
@@ -132,6 +139,7 @@ public class GraphUI extends Application {
             }
         };
         del_node.setOnAction(dnode_event);
+
         MenuItem del_edge = new MenuItem("Delete Edge");
         EventHandler<ActionEvent> del_edge_event = actionEvent -> {
             EventsUI.deleteEdge().showAndWait();
@@ -152,26 +160,43 @@ public class GraphUI extends Application {
         ChoiceDialog<Object> dialog = new ChoiceDialog<>(new Separator(), choices);
         dialog.setTitle("Run Algorithm");
         dialog.setHeaderText("Select an algorithm");
-        EventHandler<ActionEvent> event = actionEvent -> {
-            dialog.showAndWait();
-            if (dialog.getSelectedItem().equals(choices[0])) {
-                String ans = algo.isConnected() ? "The graph is strongly connected" : "The graph is not strongly connected";
-                algo_res.setText(ans);
-            } else if (dialog.getSelectedItem().equals(choices[1])) {
-                EventsUI.shortestPathDist(algo_res).showAndWait();
-            } else if (dialog.getSelectedItem().equals(choices[2])) {
-                EventsUI.shortestPath(algo_res).showAndWait();
-            } else if (dialog.getSelectedItem().equals(choices[3])) {
-                NodeData ans = algo.center();
-                algo_res.setText(String.format("The center is node %d", ans.getKey()));
-            } else if (dialog.getSelectedItem().equals(choices[4])) {
-                EventsUI.tsp(algo_res).showAndWait();
-            } else {
-                algo_res.setText("");
-            }
-            dialog.setSelectedItem("");
-        };
-        b.setOnAction(event);
+//        EventHandler<ActionEvent> event = actionEvent -> {
+//            dialog.showAndWait();
+//            System.out.println(dialog.selectedItemProperty());
+//            if (dialog.getSelectedItem().equals(choices[0])) {
+//                String ans = algo.isConnected() ? "The graph is strongly connected" : "The graph is not strongly connected";
+//                algo_res.setText(ans);
+//            } else if (dialog.getSelectedItem().equals(choices[1])) {
+//                EventsUI.shortestPathDist(algo_res).showAndWait();
+//            } else if (dialog.getSelectedItem().equals(choices[2])) {
+//                EventsUI.shortestPath(algo_res).showAndWait();
+//            } else if (dialog.getSelectedItem().equals(choices[3])) {
+//                NodeData ans = algo.center();
+//                algo_res.setText(String.format("The center is node %d", ans.getKey()));
+//            } else if (dialog.getSelectedItem().equals(choices[4])) {
+//                EventsUI.tsp(algo_res).showAndWait();
+//            }
+//            dialog.setSelectedItem(new Separator());
+//        };
+        b.setOnAction(e -> {
+            dialog.getDialogPane().lookupButton(ButtonType.OK).disableProperty().bind(dialog.selectedItemProperty().isNull());
+            dialog.showAndWait().ifPresent(choice -> {
+                if (dialog.getSelectedItem().equals(choices[0])) {
+                    String ans = algo.isConnected() ? "The graph is strongly connected" : "The graph is not strongly connected";
+                    algo_res.setText(ans);
+                } else if (dialog.getSelectedItem().equals(choices[1])) {
+                    EventsUI.shortestPathDist(algo_res).showAndWait();
+                } else if (dialog.getSelectedItem().equals(choices[2])) {
+                    EventsUI.shortestPath(algo_res).showAndWait();
+                } else if (dialog.getSelectedItem().equals(choices[3])) {
+                    NodeData ans = algo.center();
+                    algo_res.setText(String.format("The center is node %d", ans.getKey()));
+                } else if (dialog.getSelectedItem().equals(choices[4])) {
+                    EventsUI.tsp(algo_res).showAndWait();
+                }
+            });
+            dialog.setSelectedItem(new Separator());
+        });
 
         AnimationTimer timerUI = new TimerUI(algo, pane);
         timerUI.start();
@@ -184,7 +209,6 @@ public class GraphUI extends Application {
         Scene scene = new Scene(vbox, height + 30, width + 60);
         stage.setScene(scene);
         stage.show();
-
     }
 
     private static FileChooser initFileChooser() {

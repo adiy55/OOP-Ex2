@@ -18,8 +18,8 @@ import java.util.List;
 public class EventsUI {
 
     public static Stage getInputNode() {
-
         Stage stage = new Stage();
+        stage.setResizable(false);
         stage.setTitle("Add Node");
 
         Label id = new Label("Insert ID:");
@@ -69,8 +69,8 @@ public class EventsUI {
     }
 
     public static Stage getInputEdge() {
-
         Stage stage = new Stage();
+        stage.setResizable(false);
         stage.setTitle("Add Edge");
 
         Label src = new Label("Insert source node:");
@@ -114,8 +114,8 @@ public class EventsUI {
     }
 
     public static Stage deleteNode() {
-
         Stage stage = new Stage();
+        stage.setResizable(false);
         stage.setTitle("Remove Node");
 
         Label id = new Label("Insert Node ID:");
@@ -149,8 +149,8 @@ public class EventsUI {
     }
 
     public static Stage deleteEdge() {
-
         Stage stage = new Stage();
+        stage.setResizable(false);
         stage.setTitle("Remove Edge");
 
         Label src = new Label("Insert Edge source:");
@@ -192,7 +192,12 @@ public class EventsUI {
 
     public static Stage shortestPathDist(Label algo_res) {
         Stage stage = new Stage();
+        stage.setResizable(false);
         stage.setTitle("Shortest Path Distance");
+
+        Label header = new Label("Computes the length of the shortest path between the source to destination nodes.");
+        header.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+        header.setWrapText(true);
 
         Label src = new Label("Insert source node:");
         src.setWrapText(true);
@@ -220,7 +225,7 @@ public class EventsUI {
         );
 
         VBox layout = new VBox(5);
-        layout.getChildren().addAll(src, text1, dest, text2, button);
+        layout.getChildren().addAll(header, src, text1, dest, text2, button);
 
         Scene scene = new Scene(layout, 250, 200);
         stage.setScene(scene);
@@ -230,7 +235,12 @@ public class EventsUI {
 
     public static Stage shortestPath(Label algo_res) {
         Stage stage = new Stage();
+        stage.setResizable(false);
         stage.setTitle("Shortest Path");
+
+        Label header = new Label("Computes the shortest path between the source to destination nodes.");
+        header.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+        header.setWrapText(true);
 
         Label src = new Label("Insert source node:");
         src.setWrapText(true);
@@ -258,7 +268,7 @@ public class EventsUI {
         );
 
         VBox layout = new VBox(5);
-        layout.getChildren().addAll(src, text1, dest, text2, button);
+        layout.getChildren().addAll(header, src, text1, dest, text2, button);
 
         Scene scene = new Scene(layout, 250, 200);
         stage.setScene(scene);
@@ -268,6 +278,7 @@ public class EventsUI {
 
     public static Stage tsp(Label algo_res) {
         Stage stage = new Stage();
+        stage.setResizable(false);
         stage.setTitle("Travelling Salesman Problem");
         Label header = new Label("Computes a list of consecutive nodes which go over all the nodes in cities.");
         header.setFont(Font.font("Arial", FontWeight.BOLD, 15));
