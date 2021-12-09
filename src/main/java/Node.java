@@ -31,7 +31,7 @@ public class Node implements api.NodeData {
         this.id = old.id;
         this.location = old.location;
         this.weight = old.weight;
-        this.neighbors = old.neighbors;
+        this.neighbors = Utilities.copyNeighbours(old.neighbors);
         this.info = old.info;
         this.tag = old.tag;
         this.c = Color.WHITE;
