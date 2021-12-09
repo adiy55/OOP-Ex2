@@ -16,7 +16,7 @@ public class GraphUI extends Application {
     final static int width = 600;
     final static int height = 600;
     static DirectedWeightedGraphAlgorithms algo;
-    static DirectedWeightedGraphAlgorithms original_algo;
+    static String algo_file;
     private Pane pane;
     private VBox vbox;
 
@@ -28,13 +28,13 @@ public class GraphUI extends Application {
     private void initGUI(Stage stage) {
         stage.setResizable(true);
         stage.setTitle("Directed Weighted Graph UI");
+
         pane = new Pane();
-        MenuBar menu_bar = new MenuBar();
         vbox = new VBox();
         vbox.setSpacing(10);
         vbox.setPadding(new Insets(0, 10, 0, 10));
+        MenuBar menu_bar = new MenuBar();
         ToolBar toolbar = new ToolBar();
-
         Label algo_res = new Label();
 
         Menu menu_file = new Menu("File");
@@ -42,15 +42,40 @@ public class GraphUI extends Application {
         exit.setOnAction((ActionEvent event) -> Platform.exit());
         MenuItem save = new MenuItem("Save");
         MenuItem load = new MenuItem("Load");
-        menu_file.getItems().addAll(save, load, exit);
-
+        MenuItem reload = new MenuItem("Reload Graph");
+        reload.setOnAction(actionEvent -> {
+            algo.load(algo_file);
+            try {
+                stop();
+                start(stage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        menu_file.getItems().addAll(reload, save, load, exit);
         Menu menu_edit = new Menu("Edit");
         Menu add = new Menu("Add");
         MenuItem add_node = new MenuItem("Add Node");
-        EventHandler<ActionEvent> node_event = actionEvent -> EventsUI.getInputNode().show();
+        EventHandler<ActionEvent> node_event = actionEvent -> {
+            EventsUI.getInputNode().showAndWait();
+            try {
+                stop();
+                start(stage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
         add_node.setOnAction(node_event);
         MenuItem add_edge = new MenuItem("Add Edge");
-        EventHandler<ActionEvent> edge_event = actionEvent -> EventsUI.getInputEdge().show();
+        EventHandler<ActionEvent> edge_event = actionEvent -> {
+            EventsUI.getInputEdge().showAndWait();
+            try {
+                stop();
+                start(stage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
         add_edge.setOnAction(edge_event);
         Menu delete = new Menu("Delete");
         MenuItem del_node = new MenuItem("Delete Node");
