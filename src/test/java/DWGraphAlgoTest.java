@@ -30,7 +30,7 @@ class DWGraphAlgoTest {
         assertTrue(test1.isConnected());
         test1.getGraph().removeNode(8);
         test1.getGraph().removeNode(14);
-        assertFalse(test1.isConnected());
+        assertTrue(!test1.isConnected());
 
         test1 = new DWGraphAlgo("data/G2.json");
         assertTrue(test1.isConnected());
@@ -133,9 +133,13 @@ class DWGraphAlgoTest {
         lstTest.add(test.getGraph().getNode(5));
         lstTest.add(test.getGraph().getNode(9));
         List<NodeData> lst = test.tsp(lstTest);
-        for (int i = 0; i < lst.size(); i++) {
-            System.out.println(lst.get(i).getKey());
-        }
+        assertEquals(2, lst.get(0).getKey());
+        assertEquals(6, lst.get(1).getKey());
+        assertEquals(5, lst.get(2).getKey());
+        assertEquals(6, lst.get(3).getKey());
+        assertEquals(7, lst.get(4).getKey());
+        assertEquals(8, lst.get(5).getKey());
+        assertEquals(9, lst.get(6).getKey());
     }
 
     @Test
@@ -151,5 +155,32 @@ class DWGraphAlgoTest {
         test2 = new DWGraphAlgo("data/testOutput.json");
         assertEquals(test1.getGraph().getEdge(0, 1).getWeight(), test2.getGraph().getEdge(0, 1).getWeight());
         assertEquals(test1.getGraph().getNode(1).getLocation().x(), test2.getGraph().getNode(1).getLocation().x());
+    }
+
+    @Test
+    void gfff() {
+        DWGraphAlgo test = new DWGraphAlgo("data/10000Nodes.json");
+        List<NodeData> lstTest = new LinkedList<>();
+        lstTest.add(test.getGraph().getNode(33));
+        lstTest.add(test.getGraph().getNode(675));
+        lstTest.add(test.getGraph().getNode(123));
+        lstTest.add(test.getGraph().getNode(7));
+        lstTest.add(test.getGraph().getNode(654));
+        lstTest.add(test.getGraph().getNode(677));
+        List<NodeData> lst = test.tsp(lstTest);
+        for (int i = 0; i < lst.size(); i++) {
+            System.out.println(lst.get(i).getKey());
+        }
+        System.out.println();
+    }
+    @Test
+    void gfff1() {
+        DWGraphAlgo test = new DWGraphAlgo("data/G1.json");
+        System.out.println(test.center());
+    }
+    @Test
+    void gfff11() {
+        DWGraphAlgo test = new DWGraphAlgo("data/10000Nodes.json");
+        System.out.println(test.shortestPathDist(31, 826));
     }
 }

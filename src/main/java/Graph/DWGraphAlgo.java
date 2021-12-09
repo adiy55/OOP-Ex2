@@ -53,15 +53,15 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
     @Override
     public boolean isConnected() { // iterative DFS
-        int start_id = -1;
-        for (int i = 0; i < graph.getNodes().values().size(); i++) {
-            if (i == 0) {
-                start_id = graph.getNodes().get(i).getKey();
-            }
-            Node curr_node = (Node) graph.getNodes().get(i);
+        Map.Entry<Integer, NodeData> temp = graph.getNodes().entrySet().iterator().next(); //a single entry to save its key
+        Integer firstKey = temp.getKey();
+        for(Map.Entry<Integer, NodeData> entry : graph.getNodes().entrySet()) { //for each entry in the hashmap
+            if (entry.getKey() != firstKey) { //if the entry's key was not the one saved
+            Node curr_node = (Node) entry.getValue();
             curr_node.setC(Node.Color.WHITE);
+            }
         }
-        return DFS(this.graph, start_id) && DFS(transposeEdges(), start_id);
+        return DFS(this.graph, firstKey) && DFS(transposeEdges(), firstKey);
     }
 
     private boolean DFS(DWGraph graph, int start_id) {
@@ -150,8 +150,8 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         //ret[0] == distances
         //ret[1] == previous Graph.Node (key of node) visited (to calculate path)
         HashSet<Integer> visited = new HashSet<>();
-        HashSet<Integer> unvisited = new HashSet<>();
-        //ArrayList<Integer> unvisited = new ArrayList<>();
+//        HashSet<Integer> unvisited = new HashSet<>();
+        Queue<Integer> unvisited = new PriorityQueue<>(new PriorityQueueComparator(map));
         map.put(src.getKey(), new double[]{0, 0.5}); //0.5 is some invalid key of Graph.Node (should be integer)
         unvisited.add(src.getKey());
         Iterator<NodeData> itr = this.graph.nodeIter();
@@ -179,11 +179,13 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                 }
             }
             visited.add(currNode.getKey());
-            unvisited.remove(currNode.getKey());
-
-            currNode = this.graph.getNode(smallestNeigh(unvisited, visited, map)); //unvisited vertex with smallest known distance from
-            // current vertex
-            currVal = map.get(currNode.getKey())[0];
+            unvisited.remove();
+            if (!unvisited.isEmpty()) {
+                currNode = this.graph.getNode(unvisited.peek());
+//            currNode = this.graph.getNode(smallestNeigh(unvisited, visited, map)); //unvisited vertex with smallest known distance from
+                // current vertex
+                currVal = map.get(currNode.getKey())[0];
+            }
         }
         return map;
     }
@@ -244,7 +246,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
             NodeData currNode = itr.next();
             HashMap<Integer, double[]> map = this.DijkstrasAlgo(currNode);
             double currMaxVal = 0;
-            for (Map.Entry<Integer, double[]> entry : map.entrySet()) {
+            for (Map.Entry<Integer, double[]> entry : map.entrySet()) { //for each entry in map
                 if (currMaxVal < entry.getValue()[0]) {
                     currMaxVal = entry.getValue()[0];
                 }
@@ -270,7 +272,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
             cities.remove(currNode);
             List<NodeData> path = new LinkedList<>();
 
-            for (NodeData node : cities) {
+            for (NodeData node : cities) { //For each unvisited node out of the cities, calculate the one which is closest, save its path
                 if (!visitedCities.contains(node)) {
                     double currDistance = this.shortestPathDist(currNode.getKey(), node.getKey());
                     if (currDistance < minDistance) {
@@ -281,7 +283,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                 }
             }
             currNode = nextNode;
-            for (NodeData node : path) {
+            for (NodeData node : path) { //The closest node's path (out of all cities) is appended to the list which is to be returned
                 if (node != path.get(0)) {
                     ret.addLast(node);
                     visitedCities.add(node);

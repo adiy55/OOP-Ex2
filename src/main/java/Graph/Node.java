@@ -31,7 +31,7 @@ public class Node implements api.NodeData {
 
     public Node(Node old) {
         this.id = old.id;
-        this.location = old.location;
+        this.location = new GeoLoc((GeoLoc) old.location);
         this.weight = old.weight;
         this.neighbors = Utilities.copyNeighbours(old.neighbors);
         this.info = old.info;
