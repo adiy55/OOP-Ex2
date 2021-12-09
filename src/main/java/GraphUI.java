@@ -31,7 +31,6 @@ public class GraphUI extends Application {
         pane = new Pane();
         MenuBar menu_bar = new MenuBar();
         vbox = new VBox();
-//        vbox.setAlignment(Pos.CENTER);
         vbox.setSpacing(10);
         vbox.setPadding(new Insets(0, 10, 0, 10));
 
