@@ -197,9 +197,9 @@ public class DWGraph implements api.DirectedWeightedGraph {
             Node n = (Node) nodes.get(dest);
             n.removeNeighbor(src);
             EdgeData e = edges.get(src).remove(dest);
-            if (edges.get(src).size() == 1) { // if there is only one edge going from this src, then it must be dest.
-                edges.remove(src);
-            }
+//            if (edges.get(src).size() == 1) { // if there is only one edge going from this src, then it must be dest.
+//                edges.remove(src);
+//            }
             modeCount++;
             numEdges--;
             return e; // otherwise, remove the specific hashmap of dest from the hashmap of src
