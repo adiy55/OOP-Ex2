@@ -72,35 +72,22 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 //
 //    }
 
-//    private class priorityQueueComparator implements Comparator<Integer> {
-//        private HashMap<Integer, double[]> map;
-//
-//        public priorityQueueComparator(HashMap<Integer, double[]> map) {
-//            this.map = map;
-//        }
-//
-//        @Override
-//        public int compare(Integer o1, Integer o2) {
-//            if (map.get(o1)[0] == map.get(o2)[0]) return 0;
-//            else if (map.get(o1)[0] < map.get(o2)[0]) return -1;
-//            else return 1;
-//        }
-//    }
 
-    private ArrayList<Integer> addToArrayList(ArrayList<Integer> unvisited, int key, HashMap<Integer, double[]> map) {
-        double weightToAdd = this.graph.getNode(key).getWeight();
-        int end = unvisited.size();
-        int start = 0;
-        while (start != end) {
-            int currCheck = (end - start)/2;
-            if (map.get(currCheck)[0] > weightToAdd)  end = currCheck;
-            else if (map.get(currCheck)[0] < weightToAdd) start = currCheck;
-            else unvisited.add(currCheck, key);
+
+    private class PriorityQueueComparator implements Comparator<Integer> {
+        private HashMap<Integer, double[]> map;
+
+        public PriorityQueueComparator(HashMap<Integer, double[]> map) {
+            this.map = map;
         }
-        unvisited.add(start, key);
-        return unvisited;
-    }
 
+        @Override
+        public int compare(Integer o1, Integer o2) {
+            if (map.get(o1)[0] == map.get(o2)[0]) return 0;
+            else if (map.get(o1)[0] < map.get(o2)[0]) return -1;
+            else return 1;
+        }
+    }
 
 
     /**
@@ -123,8 +110,8 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         //ret[0] == distances
         //ret[1] == previous Node (key of node) visited (to calculate path)
         HashSet<Integer> visited = new HashSet<>();
-//        HashSet<Integer> unvisited = new HashSet<>();
-        ArrayList<Integer> unvisited = new ArrayList<>();
+        HashSet<Integer> unvisited = new HashSet<>();
+        //ArrayList<Integer> unvisited = new ArrayList<>();
         map.put(src.getKey(), new double[]{0, 0.5}); //0.5 is some invalid key of Node (should be integer)
         unvisited.add(src.getKey());
         Iterator<NodeData> itr = this.graph.nodeIter();
@@ -148,14 +135,13 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                     int neighDest = neighEdge.getDest();
                     if (map.get(neighDest)[0] > weightToCompare) {
                         map.put(neighDest, new double[]{weightToCompare, neighEdge.getSrc()});
-                        unvisited = addToArrayList(unvisited, neighDest, map);
                     }
                 }
             }
             visited.add(currNode.getKey());
-//            unvisited.remove(currNode.getKey());
+            unvisited.remove(currNode.getKey());
 
-//            currNode = this.graph.getNode(smallestNeigh(unvisited, visited, map)); //unvisited vertex with smallest known distance from
+            currNode = this.graph.getNode(smallestNeigh(unvisited, visited, map)); //unvisited vertex with smallest known distance from
             // current vertex
             currVal = map.get(currNode.getKey())[0];
         }
