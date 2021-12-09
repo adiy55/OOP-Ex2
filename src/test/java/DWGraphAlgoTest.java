@@ -129,9 +129,11 @@ class DWGraphAlgoTest {
 
     @Test
     void save() { //TODO
-//        DWGraphAlgo test = new DWGraphAlgo("data/G1.json");
-//        test.save("data/test1G1.json");
-//        DWGraphAlgo test1 = new DWGraphAlgo("data/test1G1.json");
+        DWGraphAlgo test1 = new DWGraphAlgo("data/G1.json");
+        List<NodeData> lst = test1.shortestPath(2, 9);
+        for (int i = 0; i < lst.size(); i++) {
+            System.out.println(lst.get(i).getKey());
+        }
 
     }
 
