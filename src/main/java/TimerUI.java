@@ -2,12 +2,18 @@ import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
 import api.NodeData;
 import javafx.animation.AnimationTimer;
+import javafx.collections.FXCollections;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class TimerUI extends AnimationTimer {
@@ -28,6 +34,7 @@ public class TimerUI extends AnimationTimer {
 
     private void addNodes() {
         Iterator<NodeData> node_iter = algo.getGraph().nodeIter();
+        ArrayList<Text> labels = new ArrayList<>();
         while (node_iter.hasNext()) {
             Node n = (Node) node_iter.next();
             Point2D point = scaleUI.getAdjustedPoint(n);
@@ -36,10 +43,17 @@ public class TimerUI extends AnimationTimer {
             circle.setCenterY(point.getY());
             circle.setFill(Color.BLACK);
             circle.setRadius(8);
+            Text text = new Text(Integer.toString(n.getKey()));
+            text.setFont(Font.font("Ariel", FontWeight.BOLD, 15));
+            text.setLayoutX(circle.getCenterX());
+            text.setLayoutY(circle.getCenterY());
+            text.setFill(Color.RED);
+            labels.add(text);
             start();
-            this.root.getChildren().add(circle);
+            this.root.getChildren().addAll(circle);
             addEdges(point, n.getKey());
         }
+        this.root.getChildren().addAll(labels);
         stop();
 //        try {
 //            Thread.sleep(100);

@@ -84,7 +84,7 @@ public class GraphUI extends Application {
         ToolBar toolbar = new ToolBar();
         toolbar.getItems().addAll(menu_bar, b, new Label("Algorithm Output:"), algo_res);
         vbox.getChildren().addAll(toolbar, pane);
-        Scene scene = new Scene(vbox, height+20, width+60);
+        Scene scene = new Scene(vbox, height+30, width+60);
         stage.setScene(scene);
         stage.show();
 
