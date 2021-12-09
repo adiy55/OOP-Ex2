@@ -1,3 +1,4 @@
+import Graph.Edge;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +28,7 @@ class EdgeTest {
     void getInfo() {
         Edge e1 = new Edge(0, 0.2, 2);
         e1.setInfo("blah blah");
-        assertTrue("blah blah".equals(e1.getInfo()));
+        assertEquals("blah blah", e1.getInfo());
     }
 
     @Test
@@ -40,6 +41,6 @@ class EdgeTest {
     @Test
     void testToString() {
         Edge e1 = new Edge(0, 0.2, 2);
-        assertTrue("Edge{src=0, dest=2, weight=0.2}".equals(e1.toString()));
+        assertEquals("Graph.Edge{src=0, dest=2, weight=0.2}", e1.toString());
     }
 }

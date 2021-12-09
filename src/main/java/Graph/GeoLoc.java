@@ -1,3 +1,5 @@
+package Graph;
+
 public class GeoLoc implements api.GeoLocation {
     private double x;
     private double y;
@@ -47,7 +49,7 @@ public class GeoLoc implements api.GeoLocation {
 
     @Override
     public String toString() {
-        return "GeoLoc{" +
+        return "Graph.GeoLoc{" +
                 "x=" + x +
                 ", y=" + y +
                 ", z=" + z +

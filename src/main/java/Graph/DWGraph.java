@@ -1,3 +1,5 @@
+package Graph;
+
 import api.EdgeData;
 import api.NodeData;
 
@@ -222,7 +224,7 @@ public class DWGraph implements api.DirectedWeightedGraph {
 
     @Override
     public String toString() {
-        return "DWGraph{" +
+        return "Graph.DWGraph{" +
                 "nodes=" + nodes +
                 ", edges=" + edges +
                 ", numEdges=" + numEdges +

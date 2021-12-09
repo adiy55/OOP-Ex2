@@ -1,3 +1,4 @@
+import Graph.GeoLoc;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,6 +46,6 @@ class GeoLocTest {
     @Test
     void testToString() {
         GeoLoc g1 = new GeoLoc(0.1, 0.3, 2.5);
-        assertTrue("GeoLoc{x=0.1, y=0.3, z=2.5}".equals(g1.toString()));
+        assertEquals("Graph.GeoLoc{x=0.1, y=0.3, z=2.5}", g1.toString());
     }
 }

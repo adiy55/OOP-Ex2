@@ -1,3 +1,5 @@
+package GUI;
+
 import api.DirectedWeightedGraphAlgorithms;
 import api.NodeData;
 import javafx.geometry.Point2D;
