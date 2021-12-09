@@ -1,7 +1,6 @@
 package GUI;
 
 import api.DirectedWeightedGraphAlgorithms;
-import api.EdgeData;
 import api.NodeData;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -15,7 +14,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.util.HashMap;
@@ -33,6 +31,7 @@ public class GraphUI extends Application {
     private Pane pane;
     private VBox vbox;
 
+    // todo: split into smaller functions, add edge weights, fix scaling when adding a node
     @Override
     public void start(Stage stage) {
         initGUI(stage);

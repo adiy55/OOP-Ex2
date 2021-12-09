@@ -257,10 +257,11 @@ public class EventsUI {
                     int inp2 = Integer.parseInt(text2.getText());
                     if (GraphUI.algo.getGraph().getNode(inp1) != null && GraphUI.algo.getGraph().getNode(inp2) != null) {
                         List<NodeData> ans = GraphUI.algo.shortestPath(inp1, inp2);
-                        ans.forEach(nodeData -> GraphUI.node_ids.add(nodeData.getKey()));
-                        for (int i = 0; i < ans.size() - 1; i++) {
-                            GraphUI.edge_ids.put(ans.get(i).getKey(), ans.get(i + 1).getKey());
-                        }
+//                        ans.forEach(nodeData -> GraphUI.node_ids.add(nodeData.getKey()));
+//                        for (int i = 0; i < ans.size() - 1; i++) {
+//                            GraphUI.edge_ids.put(ans.get(i).getKey(), ans.get(i + 1).getKey());
+//                        }
+                        System.out.println(ans.size());
                         algo_res.setText(String.format("The shortest path is %s", stringPath(ans)));
                     } else {
                         algo_res.setText("No path was found!");
