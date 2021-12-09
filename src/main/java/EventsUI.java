@@ -11,20 +11,6 @@ import javafx.stage.Stage;
 // todo: action to insert new path
 //          action to show algorithms (i.e. mark shortest path)
 public class EventsUI {
-//    public static DirectedWeightedGraphAlgorithms algo;
-
-//    public static ArrayList<Line> initGraphUI() {
-//        DirectedWeightedGraph graph = algo.getGraph();
-//        ArrayList<Line> lines = new ArrayList<>();
-//        Iterator<EdgeData> edge_iter = graph.edgeIter();
-//        while (edge_iter.hasNext()) {
-//            EdgeData e = edge_iter.next();
-//            NodeData src = graph.getNode(e.getSrc());
-//            NodeData dest = graph.getNode(e.getDest());
-//            lines.add(new Line(src.getLocation().x() * 10000000, src.getLocation().y() * 10000000, dest.getLocation().x(), dest.getLocation().y()));
-//        }
-//        return lines;
-//    }
 
     public static Stage getInputNode() {
 
@@ -52,7 +38,7 @@ public class EventsUI {
                     Node n = new Node(Integer.parseInt(text1.getText()), gl);
                     GraphUI.algo.getGraph().addNode(n);
                     l.setText(String.format("Node %d was added", n.getKey()));
-
+                    System.out.println(GraphUI.algo.getGraph().nodeSize());
                 }
         );
 
@@ -88,7 +74,6 @@ public class EventsUI {
                     l.setText(String.format("Edge (%s,%s) was added", text1.getText(), text2.getText()));
                 }
         );
-
         VBox layout = new VBox(5);
         layout.getChildren().addAll(src, text1, dest, text2, w, text3, button, l);
 

@@ -5,20 +5,18 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 // todo: fix margins, update graph after adding a node
 public class GraphUI extends Application {
-    final static int width = 500;
-    final static int height = 500;
+    final static int width = 600;
+    final static int height = 600;
     static DirectedWeightedGraphAlgorithms algo;
+    static DirectedWeightedGraphAlgorithms original_algo;
     private Pane pane;
     private VBox vbox;
 
@@ -28,14 +26,16 @@ public class GraphUI extends Application {
     }
 
     private void initGUI(Stage stage) {
+        stage.setResizable(true);
         stage.setTitle("Directed Weighted Graph UI");
         pane = new Pane();
-
         MenuBar menu_bar = new MenuBar();
         vbox = new VBox();
-        vbox.setAlignment(Pos.CENTER);
+//        vbox.setAlignment(Pos.CENTER);
         vbox.setSpacing(10);
         vbox.setPadding(new Insets(0, 10, 0, 10));
+
+        Label algo_res = new Label();
 
         Menu menu_file = new Menu("File");
         MenuItem exit = new MenuItem("Exit");
@@ -67,7 +67,14 @@ public class GraphUI extends Application {
         String[] choices = {"isConnected", "shortestPathDist", "shortestPath", "center", "tsp"};
         ChoiceDialog<Object> dialog = new ChoiceDialog<>(new Separator(), choices);
         dialog.setTitle("Run Algorithm");
-        EventHandler<ActionEvent> event = actionEvent -> dialog.show();
+        EventHandler<ActionEvent> event = actionEvent -> {
+
+            if (dialog.getSelectedItem().equals(choices[0])) {
+                String ans = algo.isConnected() ? "The graph is strongly connected" : "The graph is not strongly connected";
+                algo_res.setText(ans);
+            } // todo: finish cases
+            dialog.show();
+        };
         b.setOnAction(event);
 
         AnimationTimer timerUI = new TimerUI(algo, pane);
@@ -75,9 +82,9 @@ public class GraphUI extends Application {
 
         menu_bar.getMenus().addAll(menu_file, menu_edit);
         ToolBar toolbar = new ToolBar();
-        toolbar.getItems().addAll(menu_bar, b);
+        toolbar.getItems().addAll(menu_bar, b, new Label("Algorithm Output:"), algo_res);
         vbox.getChildren().addAll(toolbar, pane);
-        Scene scene = new Scene(vbox, height, width);
+        Scene scene = new Scene(vbox, height+20, width+60);
         stage.setScene(scene);
         stage.show();
 

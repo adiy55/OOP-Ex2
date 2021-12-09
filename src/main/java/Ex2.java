@@ -33,7 +33,7 @@ public class Ex2 {
         DirectedWeightedGraphAlgorithms ans = null;
         tmpAlgo algo = new tmpAlgo(json_file);
         boolean loaded = algo.load(json_file);
-        if(loaded) {
+        if (loaded) {
             ans = algo;
         }
         // ****** Add your code here ******
@@ -50,13 +50,15 @@ public class Ex2 {
     public static void runGUI(String json_file) {
         DirectedWeightedGraphAlgorithms alg = getGrapgAlgo(json_file);
         GraphUI.algo = alg;
+        DirectedWeightedGraphAlgorithms alg_copy = getGrapgAlgo(json_file);
+        GraphUI.original_algo = alg_copy;
         // ****** Add your code here ******
         //
         // ********************************
     }
 
     public static void main(String[] args) {
-        runGUI("data/G1.json");
+        runGUI("data/G2.json");
         Application.launch(GraphUI.class, args);
     }
 }
