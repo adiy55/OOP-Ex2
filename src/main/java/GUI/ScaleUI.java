@@ -19,6 +19,9 @@ public class ScaleUI {
     }
 
     private void calcRange() {
+        if (algo.getGraph().nodeSize() == 1) {
+            return;
+        }
         Iterator<NodeData> node_iter = algo.getGraph().nodeIter();
         while (node_iter.hasNext()) {
             NodeData n = node_iter.next();

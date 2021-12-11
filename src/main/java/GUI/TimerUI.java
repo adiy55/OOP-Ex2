@@ -42,11 +42,6 @@ public class TimerUI extends AnimationTimer {
             Circle circle = new Circle();
             circle.setCenterX(point.getX());
             circle.setCenterY(point.getY());
-            if (GraphUI.node_ids.contains(n.getKey())) {
-                circle.setFill(Color.GOLD);
-            } else {
-                circle.setFill(Color.BLACK);
-            }
             circle.setRadius(8);
             Text text = new Text(Integer.toString(n.getKey()));
             text.setFont(Font.font("Ariel", FontWeight.BOLD, 15));
@@ -74,10 +69,6 @@ public class TimerUI extends AnimationTimer {
             l.setEndX(dest_point.getX());
             l.setEndY(dest_point.getY());
             l.setStrokeWidth(2);
-            if(GraphUI.edge_ids.containsKey(e.getSrc()) && GraphUI.edge_ids.get(key).equals(e.getDest())){
-                l.setStroke(Color.GOLD);
-                mark = true;
-            }
             start();
             this.root.getChildren().add(l);
             addArrow(point, dest_point, mark);
