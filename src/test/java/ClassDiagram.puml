@@ -15,7 +15,6 @@ class DWGraph {
     + addNode (n: NodeData) : void
     + connect (src: int, dest: int, w: double) : void
     + nodeIter () : Iterator<NodeData>
-    + neighbourCount (key: int) : int
     + edgeIter () : Iterator<EdgeData>
     + edgeIter (node_id: int) : Iterator<EdgeData>
     + edgesIterator.edgesIterator ()
@@ -46,8 +45,8 @@ class DWGraphAlgo {
     - DFS (graph: DWGraph, start_id: int) : boolean
     - DFSVisit (stack: Stack<NodeData>, graph: DWGraph) : void
     + transposeEdges () : DWGraph
+    + PriorityQueueComparator: Comparator<Integer>
     - DijkstrasAlgo (src: NodeData) : HashMap<Integer, double[]>
-    - smallestNeigh (unvisited: HashSet<Integer>, visited: HashSet<Integer>, map: HashMap<Integer, double[]>)
     + shortestPathDist (src: int, dest: int) : double
     + shortestPath (src: int, dest: int) : List<NodeData>
     + center () : NodeData
@@ -196,18 +195,23 @@ class EventsUI {
     + getInputEdge () : Stage
     + deleteNode () : Stage
     + deleteEdge () : Stage
+    + shortestPathDist (algo_res: Label) : Stage
+    + shortestPath (algo_res: Label) : Stage
+    + tsp (algo_res: Label) : Stage
+    + stringPath (ans: List<NodeData>) : StringBuilder
+    + confirmCloseEvent () : Alert
 }
 
 class GraphUI {
-    + width: static final int
-    + height: static final int
+    + width: static int
+    + height: static int
     + algo: static DirectedWeightedGraphAlgorithms
     + algo_file: static String
-    - pane: Pane
-    - vbox: Vbox
+    + chooser: FileChooser
 
     + start (stage: Stage) : void
     + initGUI (stage: Stage) : void
+    - initFileChooser () : FileChooser
 }
 
 class ScaleUI{
@@ -223,9 +227,9 @@ class ScaleUI{
 }
 
 class TimerUI {
-    - algo: final DirectedWeightedGraphAlgorithms
-    - root: final Pane
-    - scaleUI: final ScaleUI
+    - algo: DirectedWeightedGraphAlgorithms
+    - root: Pane
+    - scaleUI: ScaleUI
 
     + TimerUI (algo: DirectedWeightedGraphAlgorithms, root: Pane)
     + handle (l: long) : void
