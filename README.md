@@ -39,4 +39,3 @@ these different graphs. The TSP algorithm is run on 6 cities:
 | 1,000 Nodes            | 0.215                  | 0.211                  | 0.222              | 2.09           | 0.344              |
 | 10,000 Nodes           | 0.914                  | 0.996                  | 0.987              | 27 min, 34 sec | 4.747              |
 | 100,000 Nodes          | 16.421                 | 68                     | 71                 | Timeout        | 21 min, 31 sec     |
-| 1,000,000 Nodes        |                        |                        |                    | Timeout        |                    |
