@@ -21,17 +21,26 @@ public class Node implements api.NodeData {
         BLACK
     }
 
+    /**
+     * Basic Constructor
+     * @param id
+     * @param loc
+     */
     public Node(int id, GeoLocation loc) {
         this.id = id;
         this.location = loc;
         this.weight = 0;
-        this.neighbors = new HashSet<>(); // todo: how to add neighbors
+        this.neighbors = new HashSet<>();
         this.c = Color.WHITE;
     }
 
+    /**
+     * Copy Constructor
+     * @param old
+     */
     public Node(Node old) {
         this.id = old.id;
-        this.location = old.location;
+        this.location = new GeoLoc((GeoLoc) old.location);
         this.weight = old.weight;
         this.neighbors = Utilities.copyNeighbours(old.neighbors);
         this.info = old.info;
@@ -39,6 +48,11 @@ public class Node implements api.NodeData {
         this.c = Color.WHITE;
     }
 
+    /**
+     * Receive json string, convert to node
+     * @param json
+     * @return Node
+     */
     public static Node deserializeNode(String json) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         JsonDeserializer<Node> deserializer = new JsonDeserializer<>() {

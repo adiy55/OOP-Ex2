@@ -21,24 +21,29 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         load(filename);
     }
 
+    public DWGraphAlgo(DWGraphAlgo g) {
+        this.filename = "";
+        this.init(g.graph);
+    }
+
     @Override
     public void init(DirectedWeightedGraph g) {
-        Iterator<NodeData> node_iter = g.nodeIter();
+        Iterator<NodeData> node_iter = g.nodeIter(); //iterators
         Iterator<EdgeData> edge_iter = g.edgeIter();
-        HashMap<Integer, NodeData> nodes = new HashMap<>();
+        HashMap<Integer, NodeData> nodes = new HashMap<>(); //new maps
         HashMap<Integer, HashMap<Integer, EdgeData>> edges = new HashMap<>();
-        while (node_iter.hasNext()) {
+        while (node_iter.hasNext()) { //filling maps
             NodeData n = node_iter.next();
             nodes.put(n.getKey(), new Node(n.getKey(), new GeoLoc(n.getLocation().x(), n.getLocation().y(), n.getLocation().z())));
             edges.put(n.getKey(), new HashMap<>());
         }
-        while (edge_iter.hasNext()) {
+        while (edge_iter.hasNext()) { //filling maps
             EdgeData e = edge_iter.next();
             edges.get(e.getSrc()).put(e.getDest(), new Edge(e.getSrc(), e.getWeight(), e.getDest()));
             Node n = (Node) nodes.get(e.getDest());
             n.addNeighbor(e.getSrc());
         }
-        graph = new DWGraph(nodes, edges);
+        graph = new DWGraph(nodes, edges); //assigning
     }
 
     @Override
@@ -53,15 +58,15 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
     @Override
     public boolean isConnected() { // iterative DFS
-        int start_id = -1;
-        for (int i = 0; i < graph.getNodes().values().size(); i++) {
-            if (i == 0) {
-                start_id = graph.getNodes().get(i).getKey();
+        Map.Entry<Integer, NodeData> temp = graph.getNodes().entrySet().iterator().next(); //a single entry to save its key
+        Integer firstKey = temp.getKey();
+        for (Map.Entry<Integer, NodeData> entry : graph.getNodes().entrySet()) { //for each entry in the hashmap
+            if (entry.getKey() != firstKey) { //if the entry's key was not the one saved
+                Node curr_node = (Node) entry.getValue();
+                curr_node.setC(Node.Color.WHITE);
             }
-            Node curr_node = (Node) graph.getNodes().get(i);
-            curr_node.setC(Node.Color.WHITE);
         }
-        return DFS(this.graph, start_id) && DFS(transposeEdges(), start_id);
+        return DFS(this.graph, firstKey) && DFS(transposeEdges(), firstKey);
     }
 
     private boolean DFS(DWGraph graph, int start_id) {
@@ -93,7 +98,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         }
     }
 
-    public DWGraph transposeEdges() {
+    public DWGraph transposeEdges() { //turn all edges in the opposite directions
         HashMap<Integer, NodeData> nodes = new HashMap<>();
         HashMap<Integer, HashMap<Integer, EdgeData>> edges = new HashMap<>();
         for (NodeData n : graph.getNodes().values()) {
@@ -114,6 +119,10 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         return new DWGraph(nodes, edges);
     }
 
+    /**
+     * Class to be used as comparator of the priority Queue. We pass the result map as an attribute to the constructor.
+     * The priority is assigned in ascending order of weights (whichever are discovered up to this point).
+     */
     private class PriorityQueueComparator implements Comparator<Integer> {
         private HashMap<Integer, double[]> map;
 
@@ -143,15 +152,14 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
      * the src node
      *
      * @param src
-     * @return
+     * @return Resulting hashmap
      */
-    private HashMap<Integer, double[]> DijkstrasAlgo(NodeData src) {
+    public HashMap<Integer, double[]> DijkstrasAlgo(NodeData src) {
         HashMap<Integer, double[]> map = new HashMap<>();
         //ret[0] == distances
         //ret[1] == previous Graph.Node (key of node) visited (to calculate path)
         HashSet<Integer> visited = new HashSet<>();
-        HashSet<Integer> unvisited = new HashSet<>();
-        //ArrayList<Integer> unvisited = new ArrayList<>();
+        Queue<Integer> unvisited = new PriorityQueue<>(new PriorityQueueComparator(map));
         map.put(src.getKey(), new double[]{0, 0.5}); //0.5 is some invalid key of Graph.Node (should be integer)
         unvisited.add(src.getKey());
         Iterator<NodeData> itr = this.graph.nodeIter();
@@ -164,6 +172,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
             }
         }
         //initialization complete
+
         NodeData currNode = src;
         double currVal = 0;
         while (!unvisited.isEmpty()) { //while there are still unvisited nodes
@@ -175,41 +184,19 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                     int neighDest = neighEdge.getDest();
                     if (map.get(neighDest)[0] > weightToCompare) {
                         map.put(neighDest, new double[]{weightToCompare, neighEdge.getSrc()});
+                        unvisited.remove(neighDest); //remove and add the node with corrected priority to the priority Queue
+                        unvisited.add(neighDest);
                     }
                 }
             }
             visited.add(currNode.getKey());
-            unvisited.remove(currNode.getKey());
-
-            currNode = this.graph.getNode(smallestNeigh(unvisited, visited, map)); //unvisited vertex with smallest known distance from
-            // current vertex
-            currVal = map.get(currNode.getKey())[0];
-        }
-        return map;
-    }
-
-    /**
-     * Function to return the key of the unvisited node with the smallest value.
-     *
-     * @param unvisited hashset of unvisited nodes
-     * @param visited   hashset of visited nodes
-     * @param map       map of values
-     * @return double
-     */
-    private int smallestNeigh(HashSet<Integer> unvisited, HashSet<Integer> visited, HashMap<Integer, double[]> map) {
-        double minVal = Double.MAX_VALUE;
-        int minKey = 0;
-//        Iterator<NodeData> itrNeigh = this.graph.nodeIter();
-        for (Integer i : unvisited) {
-            NodeData currNode = this.graph.getNode(i);
-            if (!visited.contains(currNode.getKey())) {
-                if (minVal >= map.get(currNode.getKey())[0]) {
-                    minVal = map.get(currNode.getKey())[0];
-                    minKey = currNode.getKey();
-                }
+            if (!unvisited.isEmpty()) {
+                currNode = this.graph.getNode(unvisited.remove()); //unvisited vertex with smallest known distance from
+                // current vertex
+                currVal = map.get(currNode.getKey())[0];
             }
         }
-        return minKey;
+        return map;
     }
 
     @Override
@@ -226,11 +213,11 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
         LinkedList<NodeData> ret = new LinkedList<>();
         int currNodeKey = dest;
-        while (currNodeKey != src) {
+        while (currNodeKey != src) { // iterate over previous nodes from the dest node, until the src node is found
             ret.addFirst(this.graph.getNode(currNodeKey));
             currNodeKey = (int) map.get(currNodeKey)[1];
         }
-        ret.addFirst(this.graph.getNode(currNodeKey));
+        ret.addFirst(this.graph.getNode(currNodeKey)); //add last node
         return ret;
     }
 
@@ -240,11 +227,11 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         double minMaxValue = Double.MAX_VALUE;
 
         Iterator<NodeData> itr = graph.nodeIter();
-        while (itr.hasNext()) {
+        while (itr.hasNext()) { //for each node
             NodeData currNode = itr.next();
             HashMap<Integer, double[]> map = this.DijkstrasAlgo(currNode);
             double currMaxVal = 0;
-            for (Map.Entry<Integer, double[]> entry : map.entrySet()) {
+            for (Map.Entry<Integer, double[]> entry : map.entrySet()) { //for each entry in map
                 if (currMaxVal < entry.getValue()[0]) {
                     currMaxVal = entry.getValue()[0];
                 }
@@ -257,20 +244,27 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         return this.graph.getNode(minMaxKey);
     }
 
+    /**
+     * Implemented using a greedy algorithm. For each unvisited city, check which path is shortest (in terms of weight)
+     * to each other unvisited node. Choose the closest, append its path to the returned list.
+     *
+     * @param cities
+     * @return list of nodes
+     */
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
         LinkedList<NodeData> ret = new LinkedList<>(); //list to be returned
         NodeData currNode = cities.get(0); //current node we are working on
         ret.add(currNode);
         HashSet<NodeData> visitedCities = new HashSet<>();
-        while (!cities.isEmpty()) {
+        while (!cities.isEmpty()) { //while there are still unvisited cities
             visitedCities.add(currNode);
             double minDistance = Double.MAX_VALUE;
             NodeData nextNode = currNode;
             cities.remove(currNode);
             List<NodeData> path = new LinkedList<>();
 
-            for (NodeData node : cities) {
+            for (NodeData node : cities) { //For each unvisited node out of the cities, calculate the one which is closest, save its path
                 if (!visitedCities.contains(node)) {
                     double currDistance = this.shortestPathDist(currNode.getKey(), node.getKey());
                     if (currDistance < minDistance) {
@@ -281,7 +275,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
                 }
             }
             currNode = nextNode;
-            for (NodeData node : path) {
+            for (NodeData node : path) { //The closest node's path (out of all cities) is appended to the list which is to be returned
                 if (node != path.get(0)) {
                     ret.addLast(node);
                     visitedCities.add(node);
@@ -292,6 +286,12 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         return ret;
     }
 
+    /**
+     * Creating json (String) objects and arrays out of the graph. appended to one another, returned
+     *
+     * @param file - the file name (may include a relative path).
+     * @return boolean value
+     */
     @Override
     public boolean save(String file) {
         JSONArray nodes = new JSONArray();
@@ -336,12 +336,12 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
             JSONArray json_nodes = jsonObject.getJSONArray("Nodes");
             HashMap<Integer, NodeData> nodes = new HashMap<>();
             HashMap<Integer, HashMap<Integer, EdgeData>> edges = new HashMap<>();
-            for (int i = 0; i < json_nodes.length(); i++) {
+            for (int i = 0; i < json_nodes.length(); i++) { //for each node
                 Node node = Node.deserializeNode(json_nodes.getJSONObject(i).toString());
                 nodes.put(node.getKey(), node);
                 edges.put(node.getKey(), new HashMap<>());
             }
-            for (Edge e : json_edges) {
+            for (Edge e : json_edges) { //for each edge
                 Node n = (Node) nodes.get(e.getSrc());
                 n.addNeighbor(e.getDest());
                 edges.get(e.getSrc()).put(e.getDest(), e);

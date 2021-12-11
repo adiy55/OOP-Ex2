@@ -1,17 +1,16 @@
 import Graph.DWGraph;
 import Graph.DWGraphAlgo;
+import api.DirectedWeightedGraph;
 import api.NodeData;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 class DWGraphAlgoTest {
     private static final double EPS = 0.001 * 0.001;
-    @Test
-    void init() {
-    }
 
     @Test
     void copy() {
@@ -25,12 +24,21 @@ class DWGraphAlgoTest {
     }
 
     @Test
+    void init() {
+        DWGraphAlgo test1 = new DWGraphAlgo("data/G1.json");
+        DWGraphAlgo test2 = new DWGraphAlgo(test1);
+        assertEquals(test1.getGraph().nodeSize(), test2.getGraph().nodeSize());
+        assertEquals(test1.getGraph().edgeSize(), test2.getGraph().edgeSize());
+        assertEquals(test1.getGraph().getEdge(0, 1).getWeight(), test2.getGraph().getEdge(0, 1).getWeight());
+    }
+
+    @Test
     void isConnected() {
         DWGraphAlgo test1 = new DWGraphAlgo("data/G1.json");
         assertTrue(test1.isConnected());
         test1.getGraph().removeNode(8);
         test1.getGraph().removeNode(14);
-        assertFalse(test1.isConnected());
+        assertTrue(!test1.isConnected());
 
         test1 = new DWGraphAlgo("data/G2.json");
         assertTrue(test1.isConnected());
@@ -108,7 +116,7 @@ class DWGraphAlgoTest {
     }
 
     @Test
-    void center() { //TODO: finish and debug
+    void center() {
         DWGraphAlgo test = new DWGraphAlgo("data/Test1.json");
         assertEquals(0, test.center().getKey());
 
@@ -133,13 +141,17 @@ class DWGraphAlgoTest {
         lstTest.add(test.getGraph().getNode(5));
         lstTest.add(test.getGraph().getNode(9));
         List<NodeData> lst = test.tsp(lstTest);
-        for (int i = 0; i < lst.size(); i++) {
-            System.out.println(lst.get(i).getKey());
-        }
+        assertEquals(2, lst.get(0).getKey());
+        assertEquals(6, lst.get(1).getKey());
+        assertEquals(5, lst.get(2).getKey());
+        assertEquals(6, lst.get(3).getKey());
+        assertEquals(7, lst.get(4).getKey());
+        assertEquals(8, lst.get(5).getKey());
+        assertEquals(9, lst.get(6).getKey());
     }
 
     @Test
-    void save() { //TODO
+    void save() {
         DWGraphAlgo test1 = new DWGraphAlgo("data/Test1.json");
         test1.save("data/testOutput.json");
         DWGraphAlgo test2 = new DWGraphAlgo("data/testOutput.json");
@@ -152,4 +164,35 @@ class DWGraphAlgoTest {
         assertEquals(test1.getGraph().getEdge(0, 1).getWeight(), test2.getGraph().getEdge(0, 1).getWeight());
         assertEquals(test1.getGraph().getNode(1).getLocation().x(), test2.getGraph().getNode(1).getLocation().x());
     }
+
+/**
+ * Tests run on big graphs:
+ */
+//    @Test
+//    void bigTest1() {
+//        DWGraphAlgo test = new DWGraphAlgo("data/100000.json");
+//        List<NodeData> lstTest = new LinkedList<>();
+//        lstTest.add(test.getGraph().getNode(33));
+//        lstTest.add(test.getGraph().getNode(675));
+//        lstTest.add(test.getGraph().getNode(123));
+//        lstTest.add(test.getGraph().getNode(7));
+//        lstTest.add(test.getGraph().getNode(654));
+//        lstTest.add(test.getGraph().getNode(677));
+//        List<NodeData> lst = test.tsp(lstTest);
+//        for (int i = 0; i < lst.size(); i++) {
+//            System.out.println(lst.get(i).getKey());
+//        }
+//        System.out.println();
+//    }
+    @Test
+    void bigTest2() {
+        DWGraphAlgo test = new DWGraphAlgo("data/100000.json");
+        System.out.println(test.center());
+    }
+//
+//    @Test
+//    void bigTest3() {
+//        DWGraphAlgo test = new DWGraphAlgo("data/100000.json");
+//        System.out.println(test.shortestPath(31, 826));
+//    }
 }
