@@ -10,7 +10,6 @@ public class ScaleUI {
     private DirectedWeightedGraphAlgorithms algo;
     private double minX, minY, maxX, maxY;
 
-
     public ScaleUI(DirectedWeightedGraphAlgorithms algo) {
         this.algo = algo;
         minX = minY = Double.MAX_VALUE;

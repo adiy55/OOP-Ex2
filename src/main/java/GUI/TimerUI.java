@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class TimerUI extends AnimationTimer {
-    private final DirectedWeightedGraphAlgorithms algo;
-    private final Pane root;
-    private final ScaleUI scaleUI;
+    private DirectedWeightedGraphAlgorithms algo;
+    private Pane root;
+    private ScaleUI scaleUI;
 
     public TimerUI(DirectedWeightedGraphAlgorithms algo, Pane root) {
         this.algo = algo;
