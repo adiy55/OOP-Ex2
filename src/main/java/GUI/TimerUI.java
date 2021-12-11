@@ -62,7 +62,7 @@ public class TimerUI extends AnimationTimer {
     private void addEdges(Point2D point, int key) {
         int i = 0;
         Iterator<EdgeData> edge_iter = algo.getGraph().edgeIter(key);
-        ArrayList<Text> labels = new ArrayList<>();
+//        ArrayList<Text> labels = new ArrayList<>();
         while (edge_iter.hasNext()) {
             i = i + 25;
             EdgeData e = edge_iter.next();
@@ -73,22 +73,17 @@ public class TimerUI extends AnimationTimer {
             l.setEndX(dest_point.getX());
             l.setEndY(dest_point.getY());
             l.setStrokeWidth(2);
-            Text text = new Text(String.format("%d -> %d = %f", e.getSrc(), e.getDest(), e.getWeight()));
-            text.setFont(Font.font("Ariel", 12));
-            text.setLayoutX(l.getStartX() + i);
-            text.setLayoutY(l.getStartY() + i);
-            text.setFill(Color.BLUE);
-            labels.add(text);
+//            Text text = new Text(String.format("%d -> %d = %f", e.getSrc(), e.getDest(), e.getWeight()));
+//            text.setFont(Font.font("Ariel", 12));
+//            text.setLayoutX(l.getStartX() + i);
+//            text.setLayoutY(l.getStartY() + i);
+//            text.setFill(Color.BLUE);
+//            labels.add(text);
             start();
             this.root.getChildren().add(l);
             addArrow(point, dest_point);
         }
-//        FXCollections.observableList(labels).addAll(labels);
-//        HBox box = new HBox();
-//        box.getChildren().addAll(labels);
-//        Group group = new Group();
-//        group.getChildren().addAll(labels);
-        this.root.getChildren().addAll(labels);
+//        this.root.getChildren().addAll(labels);
         stop();
     }
 

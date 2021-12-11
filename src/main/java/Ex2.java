@@ -39,13 +39,11 @@ public class Ex2 {
         DirectedWeightedGraphAlgorithms alg = getGrapgAlgo(json_file);
         GraphUI.algo = alg;
         GUI.GraphUI.algo_file = json_file;
-        // ****** Add your code here ******
-        //
-        // ********************************
+        Application.launch(GraphUI.class, json_file);
     }
 
     public static void main(String[] args) {
-        runGUI("data/G1.json");
-        Application.launch(GraphUI.class, args);
+        String file_path = args[0];
+        runGUI(file_path);
     }
 }

@@ -50,8 +50,12 @@ public class EventsUI {
                     double inp4 = Double.parseDouble(text2.getText());
                     GeoLoc gl = new GeoLoc(inp2, inp3, inp4);
                     Node n = new Node(inp1, gl);
+                    if (GraphUI.algo.getGraph().getNode(inp1) != null) {
+                        l.setText(String.format("Node %d was changed", n.getKey()));
+                    } else {
+                        l.setText(String.format("Node %d was added", n.getKey()));
+                    }
                     GraphUI.algo.getGraph().addNode(n);
-                    l.setText(String.format("Node %d was added", n.getKey()));
                     text1.setText("");
                     text2.setText("");
                     text3.setText("");
@@ -96,8 +100,10 @@ public class EventsUI {
                     double inp3 = Double.parseDouble(text3.getText());
                     if (GraphUI.algo.getGraph().getNode(inp1) != null && GraphUI.algo.getGraph().getNode(inp2) != null) {
                         GraphUI.algo.getGraph().connect(inp1, inp2, inp3);
+                        l.setText(String.format("Edge (%d,%d) was added", inp1, inp2));
+                    } else {
+                        l.setText("Invalid edge!");
                     }
-                    l.setText(String.format("Edge (%d,%d) was added", inp1, inp2));
                     text1.setText("");
                     text2.setText("");
                     text3.setText("");
