@@ -226,7 +226,7 @@ public class EventsUI {
         VBox layout = new VBox(5);
         layout.getChildren().addAll(header, src, text1, dest, text2, button);
 
-        Scene scene = new Scene(layout, 250, 200);
+        Scene scene = new Scene(layout, 300, 250);
         stage.setScene(scene);
 
         return stage;
@@ -257,10 +257,6 @@ public class EventsUI {
                     int inp2 = Integer.parseInt(text2.getText());
                     if (GraphUI.algo.getGraph().getNode(inp1) != null && GraphUI.algo.getGraph().getNode(inp2) != null) {
                         List<NodeData> ans = GraphUI.algo.shortestPath(inp1, inp2);
-//                        ans.forEach(nodeData -> GraphUI.node_ids.add(nodeData.getKey()));
-//                        for (int i = 0; i < ans.size() - 1; i++) {
-//                            GraphUI.edge_ids.put(ans.get(i).getKey(), ans.get(i + 1).getKey());
-//                        }
                         System.out.println(ans.size());
                         algo_res.setText(String.format("The shortest path is %s", stringPath(ans)));
                     } else {
@@ -274,7 +270,7 @@ public class EventsUI {
         VBox layout = new VBox(5);
         layout.getChildren().addAll(header, src, text1, dest, text2, button);
 
-        Scene scene = new Scene(layout, 250, 200);
+        Scene scene = new Scene(layout, 300, 250);
         stage.setScene(scene);
 
         return stage;
@@ -283,7 +279,7 @@ public class EventsUI {
     public static Stage tsp(Label algo_res) {
         Stage stage = new Stage();
         stage.setResizable(false);
-        stage.setTitle("Travelling Salesman Problem");
+        stage.setTitle("TSP");
         Label header = new Label("Computes a list of consecutive nodes which go over all the nodes in cities.");
         header.setFont(Font.font("Arial", FontWeight.BOLD, 15));
         header.setWrapText(true);
@@ -318,7 +314,7 @@ public class EventsUI {
         VBox layout = new VBox(5);
         layout.getChildren().addAll(header, msg, text, button1, l, button);
 
-        Scene scene = new Scene(layout, 250, 200);
+        Scene scene = new Scene(layout, 300, 250);
         stage.setScene(scene);
 
         return stage;

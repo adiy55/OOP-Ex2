@@ -29,14 +29,15 @@ public class GraphUI extends Application {
     public static String algo_file;
     public static FileChooser chooser = initFileChooser();
 
-    // todo: split into smaller functions, add edge weights, fix scaling when adding a node
+    // todo: fix scaling when adding a node, edge deletion?? (new graph with 5, 9 without one of the edges)
     @Override
     public void start(Stage stage) {
         initGUI(stage);
     }
 
     private void initGUI(Stage stage) {
-        stage.setMaximized(true);
+        stage.setMinHeight(500);
+        stage.setMinWidth(1000);
         stage.setTitle("Directed Weighted Graph UI");
 
         Pane pane = new Pane();
@@ -164,7 +165,7 @@ public class GraphUI extends Application {
         menu_edit.getItems().addAll(add, delete);
 
         Button b = new Button("Algorithm");
-        String[] choices = {"isConnected", "shortestPathDist", "shortestPath", "center", "tsp"};
+        String[] choices = {"Is Connected", "Shortest Path Distance", "Shortest Path", "Center", "Travelling Salesman Problem"};
         ChoiceDialog<Object> dialog = new ChoiceDialog<>(new Separator(), choices);
         dialog.setTitle("Run Algorithm");
         dialog.setHeaderText("Select an algorithm");

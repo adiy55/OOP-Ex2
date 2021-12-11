@@ -14,6 +14,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -58,10 +60,12 @@ public class TimerUI extends AnimationTimer {
     }
 
     private void addEdges(Point2D point, int key) {
+        int i = 0;
         Iterator<EdgeData> edge_iter = algo.getGraph().edgeIter(key);
+        ArrayList<Text> labels = new ArrayList<>();
         while (edge_iter.hasNext()) {
+            i = i + 25;
             EdgeData e = edge_iter.next();
-            boolean mark = false;
             Point2D dest_point = scaleUI.getAdjustedPoint(algo.getGraph().getNode(e.getDest()));
             Line l = new Line();
             l.setStartX(point.getX());
@@ -69,14 +73,26 @@ public class TimerUI extends AnimationTimer {
             l.setEndX(dest_point.getX());
             l.setEndY(dest_point.getY());
             l.setStrokeWidth(2);
+            Text text = new Text(String.format("%d -> %d = %f", e.getSrc(), e.getDest(), e.getWeight()));
+            text.setFont(Font.font("Ariel", 12));
+            text.setLayoutX(l.getStartX() + i);
+            text.setLayoutY(l.getStartY() + i);
+            text.setFill(Color.BLUE);
+            labels.add(text);
             start();
             this.root.getChildren().add(l);
-            addArrow(point, dest_point, mark);
+            addArrow(point, dest_point);
         }
+//        FXCollections.observableList(labels).addAll(labels);
+//        HBox box = new HBox();
+//        box.getChildren().addAll(labels);
+//        Group group = new Group();
+//        group.getChildren().addAll(labels);
+        this.root.getChildren().addAll(labels);
         stop();
     }
 
-    private void addArrow(Point2D point, Point2D dest_point, boolean mark) {
+    private void addArrow(Point2D point, Point2D dest_point) {
         double dist = point.distance(dest_point);
         double x_left = dest_point.getX() + ((15 / dist) * (((point.getX() - dest_point.getX()) * Math.cos(50) + ((point.getY() - dest_point.getY()) * (Math.sin(50))))));
         double x_right = dest_point.getX() + ((15 / dist) * (((point.getX() - dest_point.getX()) * Math.cos(50) - ((point.getY() - dest_point.getY()) * (Math.sin(50))))));
@@ -94,10 +110,6 @@ public class TimerUI extends AnimationTimer {
         right.setEndX(x_right);
         right.setEndY(y_right);
         right.setStrokeWidth(2);
-        if(mark){
-            left.setStroke(Color.GOLD);
-            right.setStroke(Color.GOLD);
-        }
         start();
         this.root.getChildren().addAll(left, right);
         stop();
