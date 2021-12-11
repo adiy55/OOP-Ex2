@@ -29,7 +29,6 @@ public class GraphUI extends Application {
     public static String algo_file;
     public static FileChooser chooser = initFileChooser();
 
-    // todo: fix scaling when adding a node, edge deletion?? (new graph with 5, 9 without one of the edges)
     @Override
     public void start(Stage stage) {
         initGUI(stage);

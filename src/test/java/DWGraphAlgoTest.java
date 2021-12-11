@@ -38,7 +38,7 @@ class DWGraphAlgoTest {
         assertTrue(test1.isConnected());
         test1.getGraph().removeNode(8);
         test1.getGraph().removeNode(14);
-        assertTrue(!test1.isConnected());
+        assertFalse(test1.isConnected());
 
         test1 = new DWGraphAlgo("data/G2.json");
         assertTrue(test1.isConnected());
@@ -184,11 +184,11 @@ class DWGraphAlgoTest {
 //        }
 //        System.out.println();
 //    }
-    @Test
-    void bigTest2() {
-        DWGraphAlgo test = new DWGraphAlgo("data/100000.json");
-        System.out.println(test.center());
-    }
+//    @Test
+//    void bigTest2() {
+//        DWGraphAlgo test = new DWGraphAlgo("data/100000.json");
+//        System.out.println(test.center());
+//    }
 //
 //    @Test
 //    void bigTest3() {

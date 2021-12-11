@@ -59,7 +59,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
     @Override
     public boolean isConnected() { // iterative DFS
         Map.Entry<Integer, NodeData> temp = graph.getNodes().entrySet().iterator().next(); //a single entry to save its key
-        Integer firstKey = temp.getKey();
+        int firstKey = temp.getKey();
         for (Map.Entry<Integer, NodeData> entry : graph.getNodes().entrySet()) { //for each entry in the hashmap
             if (entry.getKey() != firstKey) { //if the entry's key was not the one saved
                 Node curr_node = (Node) entry.getValue();
@@ -123,7 +123,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
      * Class to be used as comparator of the priority Queue. We pass the result map as an attribute to the constructor.
      * The priority is assigned in ascending order of weights (whichever are discovered up to this point).
      */
-    private class PriorityQueueComparator implements Comparator<Integer> {
+    private static class PriorityQueueComparator implements Comparator<Integer> {
         private HashMap<Integer, double[]> map;
 
         public PriorityQueueComparator(HashMap<Integer, double[]> map) {
@@ -191,7 +191,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
             }
             visited.add(currNode.getKey());
             if (!unvisited.isEmpty()) {
-                currNode = this.graph.getNode(unvisited.remove()); //unvisited vertex with smallest known distance from
+                currNode = this.graph.getNode(unvisited.remove()); //unvisited vertex with the smallest known distance from
                 // current vertex
                 currVal = map.get(currNode.getKey())[0];
             }
@@ -254,6 +254,7 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
         LinkedList<NodeData> ret = new LinkedList<>(); //list to be returned
+        if (cities.isEmpty()) return ret;
         NodeData currNode = cities.get(0); //current node we are working on
         ret.add(currNode);
         HashSet<NodeData> visitedCities = new HashSet<>();
