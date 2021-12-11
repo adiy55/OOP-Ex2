@@ -29,13 +29,14 @@ implement this algorithm. For each node to visit, we check which of the other no
 in terms of distance, and go to it. The action is repeated until there are no nodes to visit.
 
 ## Performance
-Below, we shall present the performance of the most time-consuming algorithms (in seconds).
+Below, we shall present the performance of the most time-consuming algorithms (in seconds. When 
+time exceeds a minute, the fraction is excluded due to little to no importance).
 For the sake of unity and simplicity, we shall run the same algorithms on the same input queries on 
-these different graphs:
+these different graphs. The TSP algorithm is run on 6 cities:
 
-|                        | is Connected           | Shortest Path Distance | Shortest Path      | Center        | TSP           |
-| ---------------------- | ---------------------- | ---------------------- | ------------------ | ------------- | ------------- |
-| 1000 Nodes             | 0.245                  | 0.265                  | 0.270              | 17.717        | 0.734         |
-| 10000 Nodes            | Shortest Path Distance | Paragraph              | Text               | Description   | 42.469        |
-| 100000 Nodes           | Shortest Path Distance | Paragraph              | Text               | Description   | Description   |
-| 1000000 Nodes          | Shortest Path Distance | Paragraph              | Text               | Description   | Description   |
+|                        | is Connected           | Shortest Path Distance | Shortest Path      | Center         | TSP (for 6 cities) |
+| ---------------------- | ---------------------- | ---------------------- | ------------------ | -------------- | ------------------ |
+| 1,000 Nodes            | 0.215                  | 0.211                  | 0.222              | 2.09           | 0.344              |
+| 10,000 Nodes           | 0.914                  | 0.996                  | 0.987              | 27 min, 34 sec | 4.747              |
+| 100,000 Nodes          | 16.421                 | 68                     | 71                 | Timeout        | 21 min, 31 sec     |
+| 1,000,000 Nodes        |                        |                        |                    | Timeout        |                    |

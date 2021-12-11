@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.function.Consumer;
 
-// todo: should we catch exceptions?
 public class DWGraph implements api.DirectedWeightedGraph {
     private HashMap<Integer, NodeData> nodes;
     private HashMap<Integer, HashMap<Integer, EdgeData>> edges; // key = src, value: key = dest, value = edge
@@ -43,8 +42,7 @@ public class DWGraph implements api.DirectedWeightedGraph {
 
     /*
     If the nodes HashMap contains a node with the same key, the new node will overwrite the old node.
-    todo: make sure test that the function works as mentioned above.
-     */
+    */
     @Override
     public void addNode(NodeData n) {
         nodes.put(n.getKey(), n);
@@ -55,12 +53,11 @@ public class DWGraph implements api.DirectedWeightedGraph {
 
     /*
     If the edges HashMap contains an edge with the same src or dest, overwrites the existing edge.
-    todo: if the src, dest do not exist or an illegal weight is given (negative num) -> should not add edge, add exception
-     */
+    */
     @Override
     public void connect(int src, int dest, double w) {
         if (!nodes.containsKey(src) || !nodes.containsKey(dest) || w <= 0 || src == dest) {
-            throw new IllegalArgumentException("Illegal edge!");
+            throw new IllegalArgumentException("Invalid edge!");
         }
         Edge e = new Edge(src, w, dest);
         if (edges.containsKey(src)) {
@@ -110,7 +107,7 @@ public class DWGraph implements api.DirectedWeightedGraph {
         };
     }
 
-    public int neighbourCount(int key) {
+    public int neighbourCount(int key) { //TODO: remove method
         return this.edges.get(key).size();
     }
 
