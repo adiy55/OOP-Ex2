@@ -56,6 +56,10 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
         return new DWGraph(this.graph);
     }
 
+    /*
+    An explanation of the algorithm with improved runtime complexity:
+    https://www.techiedelight.com/check-given-graph-strongly-connected-not/
+     */
     @Override
     public boolean isConnected() { // iterative DFS
         Map.Entry<Integer, NodeData> temp = graph.getNodes().entrySet().iterator().next(); //a single entry to save its key

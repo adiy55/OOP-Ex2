@@ -169,6 +169,10 @@ public class GraphUI extends Application {
         dialog.setTitle("Run Algorithm");
         dialog.setHeaderText("Select an algorithm");
         b.setOnAction(event -> {
+            /*
+            How to prevent the selected item from executing until confirmation button is clicked:
+            https://stackoverflow.com/questions/32826247/how-to-determine-if-canceled-is-pressed-in-a-javafx-choicedialog
+             */
             dialog.getDialogPane().lookupButton(ButtonType.OK).disableProperty().bind(dialog.selectedItemProperty().isNull());
             dialog.showAndWait().ifPresent(choice -> {
                 if (dialog.getSelectedItem().equals(choices[0])) {
