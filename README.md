@@ -9,7 +9,7 @@ user interface) that presents the graphs and algorithms to the user.
 
 Explanations of the complex algorithms we implemented:
 
-**Shortest Path Distance & Shortest Path:**
+### Shortest Path Distance & Shortest Path:
 
 * These two algorithms use ***Dijkstra's Algorithm***. Although this algorithm has the same runtime as the
   Floyd–Warshall Algorithm, it has a much better space complexity.
@@ -19,13 +19,13 @@ Explanations of the complex algorithms we implemented:
 
 With this information we can easily deduce the desired results.
 
-**Center:**
+### Center:
 
 * This algorithm finds the node which minimizes the maximum distance of all nodes from it.
 * The function iterates the nodes and (using ***Dijkstra's Algorithm*** mentioned above) finds the maximum distance. Out
   of these values the minimum is chosen. The function returns the node's ID.
 
-***Travelling Salesman Problem (TSP):***
+### Travelling Salesman Problem (TSP):
 
 * The function receives a list of nodes (cities) to visit, and returns the shortest path so that all nodes are visited
   at least once.
@@ -39,7 +39,8 @@ In the table below you see the performance of the most time-consuming algorithms
 **Note:** The time is measured in seconds. When time exceeds a minute the fraction is excluded since it has little to no
 importance.
 
-For the sake of unity and simplicity, we ran the algorithms on the same input queries on these different graphs (these can be seen commented out in the relevant Junit class).
+For the sake of unity and simplicity, we ran the algorithms on the same input queries on these different graphs (these
+can be seen commented out in the relevant Junit class).
 
 |                        | is Connected           | Shortest Path Distance | Shortest Path      | Center         | TSP (for 6 cities) |
 | ---------------------- | ---------------------- | ---------------------- | ------------------ | -------------- | ------------------ |
@@ -77,5 +78,5 @@ You can download these libraries using the ``pom.xml`` file.
 
 ## 5. UML
 
-Click to Enlarge
+Click to enlarge
 ![Click to enlarge](https://github.com/adiy55/OOP-Ex2/blob/main/data/ClassDiagram.svg)
