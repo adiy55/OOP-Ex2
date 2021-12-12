@@ -77,4 +77,5 @@ You can download these libraries using the ``pom.xml`` file.
 
 ## 5. UML
 
+Click to Enlarge
 ![Click to enlarge](https://github.com/adiy55/OOP-Ex2/blob/main/data/ClassDiagram.svg)
