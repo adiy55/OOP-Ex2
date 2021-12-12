@@ -39,7 +39,7 @@ In the table below you see the performance of the most time-consuming algorithms
 **Note:** The time is measured in seconds. When time exceeds a minute the fraction is excluded since it has little to no
 importance.
 
-For the sake of unity and simplicity, we ran the algorithms on the same input queries on these different graphs (these can be seen commented out in the relevant Junit class.
+For the sake of unity and simplicity, we ran the algorithms on the same input queries on these different graphs (these can be seen commented out in the relevant Junit class).
 
 |                        | is Connected           | Shortest Path Distance | Shortest Path      | Center         | TSP (for 6 cities) |
 | ---------------------- | ---------------------- | ---------------------- | ------------------ | -------------- | ------------------ |
