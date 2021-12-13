@@ -164,6 +164,9 @@ public class DWGraph implements api.DirectedWeightedGraph {
         }
     }
 
+    /*
+    Each node has a HashSet containing the ID's of its neighbors -> O(k) runtime (k = number of neighbors)
+     */
     @Override
     public NodeData removeNode(int key) {
         for (Integer dest : edges.get(key).keySet()) { // dest nodes contain src as a neighbor
