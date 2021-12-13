@@ -34,10 +34,10 @@ public class ScaleUI {
     }
 
     public Point2D getAdjustedPoint(NodeData node) {
-        double x_range = Math.abs(maxX - minX);
-        double y_range = Math.abs(maxY - minY);
-        double x_dist = Math.abs(maxX - node.getLocation().x());
-        double y_dist = Math.abs(maxY - node.getLocation().y());
+        double x_range = maxX - minX;
+        double y_range = maxY - minY;
+        double x_dist = node.getLocation().x() - minX;
+        double y_dist = node.getLocation().y() - minY;
         double x_adjusted = (x_dist / x_range) * GraphUI.width;
         double y_adjusted = (y_dist / y_range) * GraphUI.height;
         return new Point2D(x_adjusted, y_adjusted);
