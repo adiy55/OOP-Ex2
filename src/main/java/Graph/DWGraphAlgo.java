@@ -62,15 +62,22 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
      */
     @Override
     public boolean isConnected() { // iterative DFS
-        Map.Entry<Integer, NodeData> temp = graph.getNodes().entrySet().iterator().next(); //a single entry to save its key
-        int firstKey = temp.getKey();
-        for (Map.Entry<Integer, NodeData> entry : graph.getNodes().entrySet()) { //for each entry in the hashmap
-            if (entry.getKey() != firstKey) { //if the entry's key was not the one saved
-                Node curr_node = (Node) entry.getValue();
-                curr_node.setC(Node.Color.WHITE);
+        try {
+            Map.Entry<Integer, NodeData> temp = graph.getNodes().entrySet().iterator().next(); //a single entry to save its key
+            int firstKey = temp.getKey();
+            for (Map.Entry<Integer, NodeData> entry : graph.getNodes().entrySet()) { //for each entry in the hashmap
+                if (entry.getKey() != firstKey) { //if the entry's key was not the one saved
+                    Node curr_node = (Node) entry.getValue();
+                    curr_node.setC(Node.Color.WHITE);
+                }
             }
+            return DFS(this.graph, firstKey) && DFS(transposeEdges(), firstKey);
         }
-        return DFS(this.graph, firstKey) && DFS(transposeEdges(), firstKey);
+        catch (NoSuchElementException e) {
+            return false;
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 
     private boolean DFS(DWGraph graph, int start_id) {
@@ -205,47 +212,61 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
 
     @Override
     public double shortestPathDist(int src, int dest) {
-        double dist = this.DijkstrasAlgo(this.graph.getNode(src)).get(dest)[0];
-        if (dist == Double.MAX_VALUE) return -1;
-        return dist;
+        try {
+            double dist = this.DijkstrasAlgo(this.graph.getNode(src)).get(dest)[0];
+            if (dist == Double.MAX_VALUE) return -1;
+            return dist;
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
-        HashMap<Integer, double[]> map = this.DijkstrasAlgo(this.graph.getNode(src));
-        if (map.get(dest)[0] == Double.MAX_VALUE) return null; //if no path exists returns null
+        try {
+            HashMap<Integer, double[]> map = this.DijkstrasAlgo(this.graph.getNode(src));
+            if (map.get(dest)[0] == Double.MAX_VALUE) return null; //if no path exists returns null
 
-        LinkedList<NodeData> ret = new LinkedList<>();
-        int currNodeKey = dest;
-        while (currNodeKey != src) { // iterate over previous nodes from the dest node, until the src node is found
-            ret.addFirst(this.graph.getNode(currNodeKey));
-            currNodeKey = (int) map.get(currNodeKey)[1];
+            LinkedList<NodeData> ret = new LinkedList<>();
+            int currNodeKey = dest;
+            while (currNodeKey != src) { // iterate over previous nodes from the dest node, until the src node is found
+                ret.addFirst(this.graph.getNode(currNodeKey));
+                currNodeKey = (int) map.get(currNodeKey)[1];
+            }
+            ret.addFirst(this.graph.getNode(currNodeKey)); //add last node
+            return ret;
         }
-        ret.addFirst(this.graph.getNode(currNodeKey)); //add last node
-        return ret;
+        catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     public NodeData center() {
-        int minMaxKey = Integer.MAX_VALUE;
-        double minMaxValue = Double.MAX_VALUE;
+        try {
+            int minMaxKey = Integer.MAX_VALUE;
+            double minMaxValue = Double.MAX_VALUE;
 
-        Iterator<NodeData> itr = graph.nodeIter();
-        while (itr.hasNext()) { //for each node
-            NodeData currNode = itr.next();
-            HashMap<Integer, double[]> map = this.DijkstrasAlgo(currNode);
-            double currMaxVal = 0;
-            for (Map.Entry<Integer, double[]> entry : map.entrySet()) { //for each entry in map
-                if (currMaxVal < entry.getValue()[0]) {
-                    currMaxVal = entry.getValue()[0];
+            Iterator<NodeData> itr = graph.nodeIter();
+            while (itr.hasNext()) { //for each node
+                NodeData currNode = itr.next();
+                HashMap<Integer, double[]> map = this.DijkstrasAlgo(currNode);
+                double currMaxVal = 0;
+                for (Map.Entry<Integer, double[]> entry : map.entrySet()) { //for each entry in map
+                    if (currMaxVal < entry.getValue()[0]) {
+                        currMaxVal = entry.getValue()[0];
+                    }
+                }
+                if (minMaxValue > currMaxVal) {
+                    minMaxKey = currNode.getKey();
+                    minMaxValue = currMaxVal;
                 }
             }
-            if (minMaxValue > currMaxVal) {
-                minMaxKey = currNode.getKey();
-                minMaxValue = currMaxVal;
-            }
+            return this.graph.getNode(minMaxKey);
         }
-        return this.graph.getNode(minMaxKey);
+        catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -257,38 +278,47 @@ public class DWGraphAlgo implements api.DirectedWeightedGraphAlgorithms {
      */
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
-        LinkedList<NodeData> ret = new LinkedList<>(); //list to be returned
-        if (cities.isEmpty()) return ret;
-        NodeData currNode = cities.get(0); //current node we are working on
-        ret.add(currNode);
-        HashSet<NodeData> visitedCities = new HashSet<>();
-        while (!cities.isEmpty()) { //while there are still unvisited cities
-            visitedCities.add(currNode);
-            double minDistance = Double.MAX_VALUE;
-            NodeData nextNode = currNode;
-            cities.remove(currNode);
-            List<NodeData> path = new LinkedList<>();
+        try {
+            LinkedList<NodeData> ret = new LinkedList<>(); //list to be returned
+            if (cities.isEmpty()) return null;
+            NodeData currNode = cities.get(0); //current node we are working on
+            ret.add(currNode);
+            HashSet<NodeData> visitedCities = new HashSet<>();
+            while (!cities.isEmpty()) { //while there are still unvisited cities
+                visitedCities.add(currNode);
+                double minDistance = Double.MAX_VALUE;
+                NodeData nextNode = currNode;
+                cities.remove(currNode);
+                List<NodeData> path = new LinkedList<>();
 
-            for (NodeData node : cities) { //For each unvisited node out of the cities, calculate the one which is closest, save its path
-                if (!visitedCities.contains(node)) {
-                    double currDistance = this.shortestPathDist(currNode.getKey(), node.getKey());
-                    if (currDistance < minDistance) {
-                        minDistance = currDistance;
-                        nextNode = node;
-                        path = this.shortestPath(currNode.getKey(), node.getKey());
+                for (NodeData node : cities) { //For each unvisited node out of the cities, calculate the one which is closest, save its path
+                    if (!visitedCities.contains(node)) {
+                        double currDistance = this.shortestPathDist(currNode.getKey(), node.getKey());
+                        if (currDistance < minDistance) {
+                            minDistance = currDistance;
+                            nextNode = node;
+                            path = this.shortestPath(currNode.getKey(), node.getKey());
+                        }
+                    }
+                }
+                currNode = nextNode;
+                for (NodeData node : path) { //The closest node's path (out of all cities) is appended to the list which is to be returned
+                    if (node != path.get(0)) {
+                        ret.addLast(node);
+                        visitedCities.add(node);
+                        cities.remove(node); //if exists
                     }
                 }
             }
-            currNode = nextNode;
-            for (NodeData node : path) { //The closest node's path (out of all cities) is appended to the list which is to be returned
-                if (node != path.get(0)) {
-                    ret.addLast(node);
-                    visitedCities.add(node);
-                    cities.remove(node); //if exists
-                }
+            if (ret.size() == 0) {
+                return null;
             }
+            return ret;
         }
-        return ret;
+        catch (Exception e) {
+            System.err.println("Invalid graph for TSP on these cities!");
+            return null;
+        }
     }
 
     /**
